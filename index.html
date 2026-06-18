@@ -37,18 +37,15 @@
           <a href="#cuina" class="header__link">LA SEVA CUINA</a>
         </nav>
         <a href="#header" class="header__logo" aria-label="Aula Gastronòmica Home">
-          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" rx="16" fill="var(--azul-oscuro)" />
-            <path d="M16 8v16M8 16h16" stroke="var(--blanco)" stroke-width="2" />
-          </svg>
+          <img src="img/logo/logoIcon_blauFosc.svg" alt="Aula Gastronòmica" class="header__logo-img" />
         </a>
         <nav class="header__nav header__nav--right">
-          <a href="#contacte" class="header__link">CONTACTE</a>
-          <a href="#lang" class="header__link header__link--icon" aria-label="Language">
+          <a href="#contacte" class="header__link">Contacte</a>
+          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="header__link header__link--icon" aria-label="Instagram">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/>
-              <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/>
-              <path d="M2 12h20"/>
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
             </svg>
           </a>
         </nav>
@@ -74,15 +71,9 @@
           <li><a href="#contacte" class="mobile-link">CONTACTE</a></li>
         </ul>
         <div class="mobile-lang">
-          <button class="mobile-lang-btn mobile-lang-btn--active" data-lang="es">
-            <span class="lang-flag lang-flag--es"></span>ES
-          </button>
-          <button class="mobile-lang-btn" data-lang="ca">
-            <span class="lang-flag lang-flag--ca"></span>CA
-          </button>
-          <button class="mobile-lang-btn" data-lang="en">
-            <span class="lang-flag lang-flag--en"></span>EN
-          </button>
+          <button class="mobile-lang-btn mobile-lang-btn--active" data-lang="es"><span class="lang-flag lang-flag--es"></span>ES</button>
+          <button class="mobile-lang-btn" data-lang="ca"><span class="lang-flag lang-flag--ca"></span>CA</button>
+          <button class="mobile-lang-btn" data-lang="en"><span class="lang-flag lang-flag--en"></span>EN</button>
         </div>
       </nav>
     </header>
@@ -94,7 +85,7 @@
           <div class="hero__header">
             <div class="hero__titles">
               <span class="hero__subtitle">AULA GASTRONÒMICA DE L'EMPORDÀ</span>
-              <h1 class="hero__title">AULA<br>GASTRONÒMICA</h1>
+              <h1 class="hero__title">AULA<br />GASTRONÒMICA</h1>
             </div>
             <div class="hero__badge-wrapper">
               <!-- Stylized 4-grid culinary badge -->
@@ -104,17 +95,22 @@
                 <line x1="5" y1="30" x2="55" y2="30" stroke="var(--blanco)" stroke-width="1.5" stroke-dasharray="2 2" />
                 <path d="M18 12c1.5 2 1.5 5 0 7m4-7c1.5 2 1.5 5 0 7m-8-5c2 1.5 5 1.5 7 0" stroke="var(--blanco)" stroke-width="1.5" />
                 <path d="M40 12c2 1 2 3 0 4s-2 3 0 4m5-8c2 1 2 3 0 4s-2 3 0 4" stroke="var(--blanco)" stroke-width="1.5" stroke-linecap="round" />
-                <path d="M14 45c4-2 8-2 11 0 1-2 1-5 0-7-3 2-7 2-11 0m11 0l3-1.5v5l-3-3.5" stroke="var(--blanco)" stroke-width="1.5" stroke-linejoin="round" />
+                <path
+                  d="M14 45c4-2 8-2 11 0 1-2 1-5 0-7-3 2-7 2-11 0m11 0l3-1.5v5l-3-3.5"
+                  stroke="var(--blanco)"
+                  stroke-width="1.5"
+                  stroke-linejoin="round"
+                />
                 <path d="M42 38v10m3-10v10m-6-10v5c0 1.5 1 2.5 2 2.5s2-1 2-2.5v-5" stroke="var(--blanco)" stroke-width="1.5" stroke-linecap="round" />
               </svg>
             </div>
           </div>
-          
+
           <div class="hero__middle">
             <div class="hero__badge">
               <span class="hero__badge-text">TRADICIÓ I INNOVACIÓ DE LA MÀ DE QUIM CASELLAS</span>
             </div>
-            
+
             <div class="hero__actions">
               <a href="#espai" class="btn btn--pill">Les Aules</a>
               <a href="#activitats" class="btn btn--pill">Consultar activitats</a>
@@ -125,13 +121,13 @@
 
           <div class="hero__grid">
             <div class="hero__grid-item hero__grid-item--left">
-              <img src="img/pexels-lich-31748679.webp" alt="Paella en preparació" class="hero__img">
+              <img src="img/pexels-lich-31748679.webp" alt="Paella en preparació" class="hero__img" />
             </div>
             <div class="hero__grid-item hero__grid-item--center" id="expanding-video-container">
               <video src="img/video.mp4" autoplay loop muted playsinline class="hero__video"></video>
             </div>
             <div class="hero__grid-item hero__grid-item--right">
-              <img src="img/pexels-kampus-8629107.webp" alt="Ingredients frescos i cuina" class="hero__img">
+              <img src="img/pexels-kampus-8629107.webp" alt="Ingredients frescos i cuina" class="hero__img" />
             </div>
           </div>
         </div>
@@ -165,7 +161,7 @@
       <section class="chef-profile section" id="cuina">
         <div class="container chef-profile__container">
           <div class="chef-profile__image-wrapper">
-            <img src="img/pexels-rdne-5779781.webp" alt="Chef Quim Casellas a la cuina" class="chef-profile__img">
+            <img src="img/pexels-rdne-5779781.webp" alt="Chef Quim Casellas a la cuina" class="chef-profile__img" />
           </div>
           <h2 class="chef-profile__name">QUIM CASELLAS</h2>
           <blockquote class="chef-profile__quote">La cuina com una manera d'entendre el món.</blockquote>
@@ -187,7 +183,7 @@
             </ul>
           </div>
           <div class="space-features__image-wrapper">
-            <img src="img/pexels-kampus-8629123.webp" alt="Espai del taller gastronòmic" class="space-features__img">
+            <img src="img/pexels-kampus-8629123.webp" alt="Espai del taller gastronòmic" class="space-features__img" />
           </div>
         </div>
       </section>
@@ -195,19 +191,19 @@
       <!-- Corporate Training Banners Section -->
       <section class="corporate-training">
         <div class="corporate-training__banners">
-          <div class="training-banner" style="background-image: url('img/pexels-kampus-8629123.webp');">
+          <div class="training-banner" style="background-image: url(&quot;img/pexels-kampus-8629123.webp&quot;)">
             <div class="training-banner__overlay"></div>
             <div class="training-banner__content">
               <span class="training-banner__pill">Formació per a particulars</span>
             </div>
           </div>
-          <div class="training-banner" style="background-image: url('img/pexels-filirovska-8250691.webp');">
+          <div class="training-banner" style="background-image: url(&quot;img/pexels-filirovska-8250691.webp&quot;)">
             <div class="training-banner__overlay"></div>
             <div class="training-banner__content">
               <span class="training-banner__pill">Formació per a empreses</span>
             </div>
           </div>
-          <div class="training-banner" style="background-image: url('img/pexels-rdne-5779781.webp');">
+          <div class="training-banner" style="background-image: url(&quot;img/pexels-rdne-5779781.webp&quot;)">
             <div class="training-banner__overlay"></div>
             <div class="training-banner__content">
               <span class="training-banner__pill">Experiències a mida</span>
@@ -220,13 +216,15 @@
       <section class="activities section" id="activitats">
         <div class="container activities__container">
           <div class="activities__image-wrapper">
-            <img src="img/pexels-filirovska-8250691.webp" alt="Taller d'activitats gastronòmiques" class="activities__img">
+            <img src="img/pexels-filirovska-8250691.webp" alt="Taller d'activitats gastronòmiques" class="activities__img" />
           </div>
           <div class="activities__content">
             <h2 class="activities__title">ACTIVITATS</h2>
             <p class="activities__lead">Formar i inspirar a través d'una gastronomia de qualitat, sostenible i arrelada al territori.</p>
             <p class="activities__text">Per això oferim una selecció d'activitats de formació gastronòmica i culinària per a tots els públics.</p>
-            <p class="activities__text">Des de tallers de cuina bàsica, passant per tallers temàtics de cuina d'arreu del món, cuina saludable i tècniques modernes de cuina.</p>
+            <p class="activities__text">
+              Des de tallers de cuina bàsica, passant per tallers temàtics de cuina d'arreu del món, cuina saludable i tècniques modernes de cuina.
+            </p>
           </div>
         </div>
       </section>
@@ -235,7 +233,9 @@
       <section class="cta section" id="cta">
         <div class="container cta__container">
           <h2 class="cta__title">Vols formar part de l'experiència?</h2>
-          <p class="cta__text">Descobreix una nova manera d'entendre la gastronomia més conscient, més propera i profundament connectada amb el territori.</p>
+          <p class="cta__text">
+            Descobreix una nova manera d'entendre la gastronomia més conscient, més propera i profundament connectada amb el territori.
+          </p>
           <div class="cta__actions">
             <a href="#contacte" class="btn btn--dark">Contactar</a>
             <a href="#reserva" class="btn btn--outline-dark">Reservar activitat</a>
