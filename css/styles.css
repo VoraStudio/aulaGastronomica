@@ -390,6 +390,7 @@ h4 {
   padding-bottom: var(--sp-80);
   background-color: var(--blanco);
   color: var(--azul-oscuro);
+  position: relative;
 }
 
 @media (width >= 48rem) {
@@ -428,6 +429,7 @@ h4 {
   text-align: right;
   padding-right: 0.5rem;
   padding-bottom: 0.5rem;
+  transform-style: preserve-3d;
 }
 
 .hero__title {
@@ -441,10 +443,12 @@ h4 {
   display: flex;
   flex-direction: column;
   gap: 0;
+  perspective: 800px;
 }
 
 .hero__title-line {
   display: block;
+  transform-style: preserve-3d;
 }
 
 .hero__title-line:first-child {
@@ -552,8 +556,9 @@ h4 {
   text-decoration: none;
   border-radius: 50px;
   padding: var(--sp-4) var(--sp-24);
-  transition: all var(--tr-base);
   cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
 }
 
 .btn--pill {
@@ -626,8 +631,8 @@ h4 {
 @media (width >= 48rem) {
   .hero__grid {
     grid-template-columns: repeat(3, 1fr);
-    padding-block: var(--sp-32);
-    margin-top: calc(var(--sp-48) * -1);
+    padding-block: var(--sp-8);
+    margin-top: calc(var(--sp-16) * -1);
     padding-bottom: var(--sp-80);
   }
 
@@ -640,7 +645,7 @@ h4 {
     aspect-ratio: 4/3;
     width: 100%;
     max-width: min(100%, 560px);
-    max-height: 250px;
+    max-height: 230px;
     border-radius: var(--radius-md);
     overflow: hidden;
     position: relative;
@@ -674,86 +679,90 @@ h4 {
    INTRO & SERVICES
    ======================================== */
 
-.intro-services {
-  min-height: 100vh;
-  display: flex;
-  align-items: flex-end;
-  position: relative;
-  z-index: 2;
+.hero__intro-bottom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 5;
   color: var(--blanco);
   padding: var(--sp-80) var(--sp-24) var(--sp-96);
-}
-
-@media (width >= 48rem) {
-  .intro-services {
-    padding: var(--sp-96) var(--sp-32) var(--sp-128);
-  }
-}
-
-.intro-services__container {
-  width: 100%;
-  max-width: var(--max-w);
-  margin-inline: auto;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--sp-48);
-  align-items: end;
+  align-items: center;
+  pointer-events: auto;
+  opacity: 0;
+  height: 100vh;
+  width: 100%;
 }
 
-@media (width >= 48rem) {
-  .intro-services__container {
-    grid-template-columns: 1.3fr 1fr;
-  }
-}
-
-.intro-services__title {
+.hero__intro-title {
   font-family: var(--ff-titulos);
-  font-size: clamp(2.25rem, 5vw, 4rem);
+  font-size: clamp(3.5rem, 8vw, 5rem);
   font-weight: var(--fw-medium);
   line-height: 1.08;
   text-shadow: 0 0.125rem 1.875rem rgba(0, 0, 0, 0.55);
-  max-width: 18ch;
+  max-width: 35ch;
+  transform-style: preserve-3d;
 }
 
-.intro-services__links {
-  display: flex;
-  flex-direction: column;
-  gap: var(--sp-16);
-}
-
-@media (width >= 48rem) {
-  .intro-services__links {
-    padding-bottom: var(--sp-8);
-  }
-}
-
-.intro-services__link {
+.hero__intro-link {
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: var(--blanco);
   position: relative;
-  padding-bottom: var(--sp-8);
+  padding-bottom: var(--sp-2);
   font-family: var(--ff-terciaria);
-  font-size: var(--fs-xs);
+  font-size: var(--fs-base);
   font-weight: var(--fw-bold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   transition: color var(--tr-base);
   text-shadow: 0 0.0625rem 0.625rem rgba(0, 0, 0, 0.4);
+  gap: var(--sp-16);
 }
 
-.intro-services__line {
+@media (width >= 48rem) {
+  .hero__intro-bottom {
+    padding: var(--sp-96) var(--sp-32) var(--sp-128);
+    grid-template-columns: 1fr 1fr;
+    bottom: 0;
+    left: 0;
+  }
+
+  .hero__intro-bottom h2 {
+    width: 60%;
+  }
+
+  .hero__intro-title {
+    grid-column: 1 / -1;
+    max-width: 35ch;
+  }
+
+  .hero__intro-links {
+    grid-column: 2;
+    justify-self: center;
+    padding-bottom: var(--sp-8);
+    font-size: var(--fs-l);
+  }
+  .hero__intro-link {
+    font-size: var(--fs-lg);
+  }
+}
+
+.hero__intro-line {
   display: block;
   width: 100%;
   height: 1.5px;
   background-color: rgba(255, 255, 255, 0.25);
-  margin-top: var(--sp-8);
+  margin-top: -1rem;
+  margin-bottom: var(--sp-24);
   position: relative;
   overflow: hidden;
 }
 
-.intro-services__line::after {
+.hero__intro-line::after {
   content: "";
   position: absolute;
   top: 0;
@@ -765,11 +774,11 @@ h4 {
   transition: transform var(--tr-base);
 }
 
-.intro-services__link:hover .intro-services__line::after {
+.hero__intro-link:hover .hero__intro-line::after {
   transform: translateX(0);
 }
 
-.intro-services__link:hover {
+.hero__intro-link:hover {
   color: var(--accent);
 }
 

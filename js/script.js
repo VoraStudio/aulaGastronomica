@@ -145,6 +145,59 @@ function initMobileMenu() {
   });
 }
 
+/* ----- HERO TITLE 3D EFFECTS ----- */
+
+function initHeroTitle3D() {
+  const titleLines = document.querySelectorAll(".hero__title-line");
+  const subtitle = document.querySelector(".hero__subtitle");
+  if (!titleLines.length || !subtitle) return;
+
+  const tl = gsap.timeline({ delay: 0.5 });
+
+  // [04] Abanico 3D: Rotación Dual (Ejes X/Y) — modo Inferior
+  // rotationX: 90 + rotationY alternado (-15/15) con stagger
+  titleLines.forEach((line) => {
+    const split = new SplitText(line, { type: "chars" });
+
+    tl.from(
+      split.chars,
+      {
+        duration: 1.2,
+        opacity: 0,
+        rotationX: 90,
+        rotationY: (i) => (i % 2 === 0 ? -15 : 15),
+        transformOrigin: "center center",
+        transformStyle: "preserve-3d",
+        ease: "power2.out",
+        stagger: { each: 0.09, from: "start" },
+      },
+      "<",
+    );
+  });
+
+  // [03] Despliegue Cinemático 3D (Ejes X/Y) — modo Inferior
+  // rotationX: 90 con transformOrigin "bottom center"
+  const subSplit = new SplitText(subtitle, { type: "lines" });
+
+  gsap.set(subSplit.lines, {
+    opacity: 0,
+    rotationX: 90,
+    transformOrigin: "bottom center",
+  });
+
+  tl.to(
+    subSplit.lines,
+    {
+      duration: 2.5,
+      opacity: 1,
+      rotationX: 0,
+      ease: "power3.out",
+      stagger: { each: 0.15, from: "start" },
+    },
+    "<0.8",
+  );
+}
+
 /* ----- HERO GRID CURTAIN REVEAL ----- */
 
 function initHeroGridReveal() {
@@ -156,7 +209,7 @@ function initHeroGridReveal() {
     duration: 1.2,
     stagger: 0.15,
     ease: "power4.inOut",
-    delay: 0.6,
+    delay: 0.8,
   });
 }
 
@@ -171,8 +224,7 @@ function initVideoExpand() {
   mm.add("(max-width: 47.999rem)", () => {
     const leftItem = document.querySelector(".hero__grid-item--left");
     const header = document.querySelector(".header");
-    const intro = document.querySelector(".intro-services");
-    if (!leftItem || !header || !intro) return;
+    if (!leftItem || !header) return;
 
     leftItem.style.overflow = "visible";
 
@@ -187,9 +239,8 @@ function initVideoExpand() {
 
     gsap.set(leftItem, { transformOrigin: "50% 0%" });
 
-    // Pin sin spacer para que intro-services quede superpuesto desde el inicio
-    const introH = intro.offsetHeight;
-    const pinScrollEnd = introH + window.innerHeight;
+    // Pin: cubre hero + buffer para animación
+    const pinScrollEnd = window.innerHeight * 2;
 
     const pinST = ScrollTrigger.create({
       trigger: ".hero",
@@ -199,9 +250,6 @@ function initVideoExpand() {
       pinSpacing: false,
       anticipatePin: 1,
       invalidateOnRefresh: true,
-      onEnter: () => {
-        initIntroReveal();
-      },
     });
 
     // Expansión: arranca desde scroll 0, se completa en los primeros 100vh
@@ -211,6 +259,9 @@ function initVideoExpand() {
         start: 0,
         end: window.innerHeight,
         scrub: 1.5,
+        onComplete: () => {
+          initIntroScrubSetup();
+        },
       },
     });
 
@@ -256,123 +307,183 @@ function initVideoExpand() {
 
     expandTl.to(container, { scale, x, y, borderRadius: 0, ease: "power2.inOut", duration: 1 }, 0);
 
-    // --- Pin sin spacer: intro-services superpuesto desde el inicio ---
-    const introEl = document.querySelector(".intro-services");
-    const introH = introEl ? introEl.offsetHeight : 0;
-    const pinScrollEnd = introH + window.innerHeight;
+    // --- Pin: cubre expansión + reveal ---
+    const pinScrollEnd = window.innerHeight + 1200;
 
-    const pinST = ScrollTrigger.create({
+    heroDesktopPin = ScrollTrigger.create({
       trigger: ".hero",
       start: "top top",
       end: `+=${pinScrollEnd}`,
       pin: true,
-      pinSpacing: false,
       anticipatePin: 1,
       invalidateOnRefresh: true,
-      onEnter: () => {
-        initIntroReveal();
-      },
     });
   });
 }
 
-/* ----- INTRO SERVICES SPLIT TEXT REVEAL ----- */
+/* ----- HERO MIDDLE ENTRADA + SALIDA ----- */
+function initHeroMiddleEffects() {
+  const badge = document.querySelector(".hero__badge");
+  const badgeText = document.querySelector(".hero__badge-text");
+  const buttons = document.querySelectorAll(".hero__actions .btn");
+  if (!badge || !buttons.length) return;
 
-let introRevealed = false;
+  // Activar will-change només per l'entrada
+  badge.style.willChange = "transform";
+  buttons.forEach((btn) => (btn.style.willChange = "transform"));
 
-function initIntroReveal(onComplete) {
-  const titleEl = document.querySelector(".intro-services__title");
-  const linkTexts = document.querySelectorAll(".intro-services__link-text");
-  if (!titleEl || !linkTexts.length) return;
-  if (introRevealed) return;
-  introRevealed = true;
+  // Estat inicial: tot invisible, preparat per l'entrada
+  gsap.set(badge, { opacity: 0, scale: 0.85, y: 20 });
 
-  // Split title into chars with line masks
-  const titleSplit = new SplitText(titleEl, { type: "chars", mask: "lines" });
-  gsap.set(titleSplit.chars, {
-    opacity: 0,
-    y: 60,
-    scale: 1.3,
-    filter: "blur(10px)",
-  });
+  // SplitText del badge ANTES de animar
+  let badgeSplit = null;
+  if (badgeText) {
+    badgeSplit = new SplitText(badgeText, { type: "chars" });
+    gsap.set(badgeSplit.chars, { opacity: 0, y: 15, rotationZ: -3 });
+  }
 
-  // Split each link text into chars with line masks
-  const linkSplits = Array.from(linkTexts).map((el) => {
-    const split = new SplitText(el, { type: "chars", mask: "lines" });
-    gsap.set(split.chars, {
-      opacity: 0,
-      y: 30,
-      scale: 1.2,
-      filter: "blur(6px)",
-    });
-    return split;
-  });
-
-  const introTl = gsap.timeline({
-    delay: 0.3,
+  const tl = gsap.timeline({
     onComplete: () => {
-      if (typeof onComplete === "function") onComplete();
+      // Netejar will-change de l'entrada
+      badge.style.willChange = "auto";
+      buttons.forEach((btn) => (btn.style.willChange = "auto"));
+      // Forçar ScrollTrigger a re-llegir valors post-entrada
+      ScrollTrigger.refresh();
     },
   });
 
-  // Title: scale down + blur clear (efecto gsapAcademy)
-  introTl.to(titleSplit.chars, {
+  // Badge: escala + desplaçament + opacitat
+  tl.to(badge, {
     opacity: 1,
-    y: 0,
     scale: 1,
-    filter: "blur(0px)",
-    stagger: 0.025,
+    y: 0,
     duration: 0.8,
     ease: "power3.out",
   });
 
-  // Link 1
-  introTl.to(
-    linkSplits[0].chars,
+  // Text del badge: caràcters escalonats
+  if (badgeSplit) {
+    tl.to(
+      badgeSplit.chars,
+      {
+        opacity: 1,
+        y: 0,
+        rotationZ: 0,
+        stagger: 0.02,
+        duration: 0.5,
+        ease: "power2.out",
+      },
+      "-=0.4",
+    );
+  }
+
+  // Botons: escalonats des de baix
+  tl.to(
+    buttons,
     {
       opacity: 1,
       y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      stagger: 0.03,
+      stagger: 0.2,
       duration: 0.6,
-      ease: "power4.out",
+      ease: "lineal",
     },
-    "-=0.3",
+    "-=0.2",
   );
+}
 
-  // Link 2
-  introTl.to(
-    linkSplits[1].chars,
-    {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      stagger: 0.03,
-      duration: 0.6,
-      ease: "power4.out",
-    },
-    "+=0.1",
-  );
+/* ----- INTRO SERVICES REVEAL (timeline + toggleActions restart) ----- */
 
-  // Link 3
-  introTl.to(
-    linkSplits[2].chars,
-    {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      filter: "blur(0px)",
-      stagger: 0.03,
-      duration: 0.6,
-      ease: "power4.out",
-    },
-    "+=0.1",
-  );
+let introSplits = null;
+let heroDesktopPin = null;
 
-  // Buffer final
-  introTl.to({}, { duration: 1.2 });
+function initIntroScrubSetup() {
+  const titleEl = document.querySelector(".hero__intro-title");
+  const linkTexts = document.querySelectorAll(".hero__intro-link-text");
+  if (!titleEl || !linkTexts.length) return;
+
+  const titleSplit = new SplitText(titleEl, { type: "lines", mask: "lines" });
+  gsap.set(titleSplit.lines, {
+    opacity: 0,
+    rotationX: -90,
+    rotationY: 0,
+    transformOrigin: "top center",
+    transformStyle: "preserve-3d",
+  });
+
+  const linkSplits = Array.from(linkTexts).map((el) => {
+    const split = new SplitText(el, { type: "words", mask: "lines" });
+    gsap.set(split.words, {
+      opacity: 0,
+      rotationX: -90,
+      rotationY: 0,
+      transformOrigin: "top center",
+      transformStyle: "preserve-3d",
+    });
+    return split;
+  });
+
+  // Show container (opacity: 0 en CSS para evitar flash)
+  gsap.set(".hero__intro-bottom", { opacity: 1 });
+
+  introSplits = { titleSplit, linkSplits, allLinkWords: linkSplits.flatMap((s) => s.words) };
+
+  // Create the ScrollTrigger + timeline after layout settles
+  requestAnimationFrame(() => createIntroReveal());
+}
+
+function createIntroReveal() {
+  if (!introSplits) return;
+
+  const heroEl = document.querySelector(".hero");
+  if (!heroEl) return;
+
+  const heroTop = heroEl.offsetTop;
+  const expansionEnd = heroTop + window.innerHeight;
+
+  const { titleSplit, allLinkWords } = introSplits;
+
+  // Timeline pausada — ScrollTrigger la controla
+  const introTl = gsap.timeline({
+    paused: true,
+  });
+  const linesLink = document.querySelectorAll(".hero__intro-line");
+  gsap.set(linesLink, { opacity: 0 });
+
+  introTl
+    .to(
+      titleSplit.lines,
+      {
+        duration: 3,
+        opacity: 1,
+        rotationX: 0,
+        rotationY: 0,
+        ease: "power3.out",
+        stagger: { each: 0.2, from: "center" },
+      },
+      "-=1.5",
+    )
+    .to(
+      allLinkWords,
+      {
+        duration: 1.4,
+        opacity: 1,
+        rotationX: 0,
+        rotationY: 0,
+        ease: "power3.out",
+        stagger: { each: 0.1, from: "start" },
+      },
+      "<.5",
+    )
+    .to(linesLink, { duration: 1, opacity: 1, stagger: { each: 0.2, from: "center" } }, "<")
+    .to(linesLink, { duration: 5 }, ">");
+
+  ScrollTrigger.create({
+    trigger: heroEl,
+    start: expansionEnd,
+    end: expansionEnd + 1,
+    toggleActions: "restart none none reset",
+    animation: introTl,
+  });
 }
 
 /* ----- INICI ----- */
@@ -381,8 +492,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Esperamos a que las fuentes de Google carguen para evitar "SplitText called before fonts loaded"
   document.fonts.ready.then(() => {
     initHeroGridReveal();
+    initHeroTitle3D();
+    initVideoExpand();
+    initIntroScrubSetup();
+    initHeroMiddleEffects();
     initMobileMenu();
     initHeaderAnimations();
-    initVideoExpand();
   });
 });
