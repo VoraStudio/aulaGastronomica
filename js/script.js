@@ -486,6 +486,26 @@ function createIntroReveal() {
   });
 }
 
+function iniciChefName() {
+  const nom = document.querySelector(".chef-profile__name");
+  if (!nom) return;
+  const split = new SplitText(nom, { type: "chars, lines" });
+
+  gsap.from(split.chars, {
+    duration: 0.7,
+    opacity: 0,
+    yPercent: 100,
+    clipPath: "inset(0 0 100% 0)",
+    ease: "power2.out",
+    stagger: { each: 0.1, from: "start" },
+    scrollTrigger: {
+      trigger: ".chef-profile",
+      start: "center 60%",
+      toggleActions: "play none none reverse",
+    },
+  });
+}
+
 /* ----- INICI ----- */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -498,5 +518,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initHeroMiddleEffects();
     initMobileMenu();
     initHeaderAnimations();
+    iniciChefName();
   });
 });
