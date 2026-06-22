@@ -215,6 +215,34 @@ function initHeroGridReveal() {
 
 /* ----- EXPANDING VIDEO ----- */
 
+function getExpandVars() {
+  const container = document.getElementById("expanding-video-container");
+  const header = document.querySelector(".header");
+  if (!container || !header) return null;
+
+  const headerH = header.offsetHeight;
+
+  // Medidas del layout real (offsetWidth/Height ignoran transform CSS)
+  const width = container.offsetWidth;
+  const height = container.offsetHeight;
+  if (width === 0 || height === 0) return null;
+
+  // Posición real en viewport sin transformaciones CSS
+  const savedTransform = container.style.transform;
+  container.style.transform = "";
+  const rect = container.getBoundingClientRect();
+  container.style.transform = savedTransform;
+
+  const scaleX = window.innerWidth / width;
+  const scaleY = (window.innerHeight - headerH) / height;
+  const scale = Math.max(scaleX, scaleY);
+
+  const x = -rect.left + (width * (scale - 1)) / 2;
+  const y = headerH - (rect.top + height) + height * scale;
+
+  return { scale, x, y };
+}
+
 function initVideoExpand() {
   gsap.registerPlugin(ScrollTrigger);
 
@@ -228,14 +256,26 @@ function initVideoExpand() {
 
     leftItem.style.overflow = "visible";
 
-    const headerH = header.offsetHeight;
-    const rect = leftItem.getBoundingClientRect();
-    if (rect.width === 0) return;
+    function getMobileVars() {
+      const width = leftItem.offsetWidth;
+      const height = leftItem.offsetHeight;
+      if (width === 0 || height === 0) return null;
 
-    const scaleX = window.innerWidth / rect.width;
-    const scaleY = window.innerHeight / rect.height;
-    const scale = Math.max(scaleX, scaleY);
-    const y = -rect.top;
+      const savedTransform = leftItem.style.transform;
+      leftItem.style.transform = "";
+      const rect = leftItem.getBoundingClientRect();
+      leftItem.style.transform = savedTransform;
+
+      const scaleX = window.innerWidth / width;
+      const scaleY = window.innerHeight / height;
+      const scale = Math.max(scaleX, scaleY);
+      const y = -rect.top;
+
+      return { scale, y };
+    }
+
+    let mobileVars = getMobileVars();
+    if (!mobileVars) return;
 
     gsap.set(leftItem, { transformOrigin: "50% 0%" });
 
@@ -247,7 +287,7 @@ function initVideoExpand() {
       start: 0,
       end: pinScrollEnd,
       pin: true,
-      pinSpacing: false,
+      pinSpacing: true,
       anticipatePin: 1,
       invalidateOnRefresh: true,
     });
@@ -259,6 +299,10 @@ function initVideoExpand() {
         start: 0,
         end: window.innerHeight,
         scrub: 1.5,
+        invalidateOnRefresh: true,
+        onRefresh: () => {
+          mobileVars = getMobileVars();
+        },
         onComplete: () => {
           initIntroScrubSetup();
         },
@@ -266,7 +310,22 @@ function initVideoExpand() {
     });
 
     expandTl.to(".hero__header, .hero__middle, .hero__badge-wrapper", { opacity: 0, y: -30, duration: 0.3 }, 0);
-    expandTl.to(leftItem, { scale, y, borderRadius: 0, ease: "power2.inOut", duration: 1 }, 0);
+    expandTl.to(leftItem, { scale: () => mobileVars.scale, y: () => mobileVars.y, borderRadius: 0, ease: "power2.inOut", duration: 1 }, 0);
+
+    // Refrescar en resize
+    let resizeTimer;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 150);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      clearTimeout(resizeTimer);
+    };
   });
 
   // Desktop: expand center video
@@ -277,17 +336,8 @@ function initVideoExpand() {
 
     container.style.overflow = "visible";
 
-    const headerH = header.offsetHeight;
-    const rect = container.getBoundingClientRect();
-    if (rect.width === 0) return;
-
-    const scaleX = window.innerWidth / rect.width;
-    const scaleY = (window.innerHeight - headerH) / rect.height;
-    const scale = Math.max(scaleX, scaleY);
-
-    // With transformOrigin at bottom-center, the video expands upward
-    const x = -rect.left + (rect.width * (scale - 1)) / 2;
-    const y = headerH - (rect.top + rect.height) + rect.height * scale;
+    let expandVars = getExpandVars();
+    if (!expandVars) return;
 
     gsap.set(container, { transformOrigin: "50% 100%" });
 
@@ -298,6 +348,10 @@ function initVideoExpand() {
         start: "top top",
         end: "+=100vh",
         scrub: 3,
+        invalidateOnRefresh: true,
+        onRefresh: () => {
+          expandVars = getExpandVars();
+        },
       },
     });
 
@@ -305,7 +359,11 @@ function initVideoExpand() {
 
     expandTl.to(".hero__header, .hero__middle, .hero__badge-wrapper", { opacity: 0, y: -30, duration: 0.3 }, 0);
 
-    expandTl.to(container, { scale, x, y, borderRadius: 0, ease: "power2.inOut", duration: 1 }, 0);
+    expandTl.to(
+      container,
+      { scale: () => expandVars.scale, x: () => expandVars.x, y: () => expandVars.y, borderRadius: 0, ease: "power2.inOut", duration: 1 },
+      0,
+    );
 
     // --- Pin: cubre expansión + reveal ---
     const pinScrollEnd = window.innerHeight + 1200;
@@ -318,6 +376,21 @@ function initVideoExpand() {
       anticipatePin: 1,
       invalidateOnRefresh: true,
     });
+
+    // Refrescar ScrollTrigger tras resize para recalcular expand vars
+    let resizeTimer;
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        ScrollTrigger.refresh();
+      }, 150);
+    };
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      clearTimeout(resizeTimer);
+    };
   });
 }
 
@@ -488,22 +561,39 @@ function createIntroReveal() {
 
 function iniciChefName() {
   const nom = document.querySelector(".chef-profile__name");
+  const quote = document.querySelector(".chef-profile__quote");
   if (!nom) return;
-  const split = new SplitText(nom, { type: "chars, lines" });
 
-  gsap.from(split.chars, {
-    duration: 0.7,
-    opacity: 0,
-    yPercent: 100,
-    clipPath: "inset(0 0 100% 0)",
-    ease: "power2.out",
-    stagger: { each: 0.1, from: "start" },
+  const split = new SplitText(nom, { type: "chars, lines" });
+  const quoteSplit = new SplitText(quote, { type: "chars" });
+  gsap.set(quoteSplit.chars, { opacity: 0 });
+
+  let tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".chef-profile",
       start: "center 60%",
       toggleActions: "play none none reverse",
     },
   });
+  tl.from(split.chars, {
+    duration: 0.7,
+    opacity: 0,
+    yPercent: 100,
+    clipPath: "inset(0 0 100% 0)",
+    ease: "power2.out",
+    stagger: { each: 0.1, from: "start" },
+  });
+  tl.to(
+    quoteSplit.chars,
+    {
+      duration: 0.5,
+      opacity: 1,
+      y: 0,
+      ease: "power3.out",
+      stagger: { each: 0.07, from: "start" },
+    },
+    "<0.5",
+  );
 }
 
 /* ----- INICI ----- */

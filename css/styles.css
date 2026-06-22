@@ -788,16 +788,18 @@ h4 {
    ======================================== */
 
 .chef-profile {
-  height: 100vh;
+  height: 110vh;
   background-color: var(--azul-oscuro);
   color: var(--blanco);
   overflow: hidden;
   position: relative;
+  margin-top: -2.5rem;
+  margin-bottom: 3rem;
 }
 
 .chef-profile__container {
   display: grid;
-  grid-template-rows: 1fr 60vh 30vh;
+  grid-template-rows: 1fr 92vh 10vh;
   align-items: start;
   width: 100%;
   height: 100%;
@@ -823,18 +825,49 @@ h4 {
 .chef-profile__name {
   grid-row: 3;
   font-family: var(--ff-titulos);
-  font-size: clamp(3rem, 10vw, 7rem);
+  font-size: clamp(4rem, 10vw, 10rem);
   font-weight: var(--fw-bold);
   letter-spacing: -0.01em;
   line-height: 0.9;
   text-align: center;
   padding: var(--sp-16);
   justify-self: center;
-  align-self: center;
+  align-self: flex-start;
+  padding: var(--sp-32) 0;
+  width: 150%;
 }
 
 .chef-profile__quote {
-  display: none;
+  grid-row: 4;
+  font-family: var(--ff-titulos);
+  font-size: clamp(1rem, 2.5vw, 2.2rem);
+  font-weight: var(--fw-regular);
+  font-style: italic;
+  letter-spacing: 0.02em;
+  text-align: center;
+  color: var(--blanco);
+  padding-top: var(--sp-16);
+  max-width: 60ch;
+  justify-self: center;
+  line-height: 1.4;
+}
+
+@media (width >= 48rem) {
+  .chef-profile__container {
+    grid-template-rows: 5vh 70vh 1fr;
+  }
+  .chef-profile {
+    margin-top: 0; /* o el espacio que quieras */
+  }
+  .chef-profile__name {
+    align-self: center;
+    padding: var(--sp-8) 0;
+  }
+
+  .chef-profile__quote {
+    padding-bottom: var(--sp-48);
+    margin-top: -2rem;
+  }
 }
 
 /* ========================================
