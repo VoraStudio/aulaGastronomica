@@ -596,6 +596,98 @@ function iniciChefName() {
   );
 }
 
+/* ----- SPACE FEATURES ----- */
+
+function initSpaceFeatures() {
+  const section = document.querySelector(".space-features");
+  const titleLines = document.querySelectorAll(".space-features__title-line");
+  const items = document.querySelectorAll(".space-features__item");
+  const imageWrapper = document.querySelector(".space-features__image-wrapper");
+  if (!section || !titleLines.length || !items.length || !imageWrapper) return;
+
+  // Estados iniciales
+  gsap.set(items, { clipPath: "inset(0 100% 0 0)" });
+  gsap.set(imageWrapper, { clipPath: "inset(0 0 0 100%)" });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top 70%",
+      toggleActions: "play none none reverse",
+    },
+  });
+
+  // 1. Título: Abanico 3D
+  titleLines.forEach((line) => {
+    const split = new SplitText(line, { type: "chars" });
+    tl.from(
+      split.chars,
+      {
+        duration: 0.6,
+        opacity: 0,
+        rotationX: 90,
+        rotationY: (i) => (i % 2 === 0 ? -15 : 15),
+        transformOrigin: "center center",
+        transformStyle: "preserve-3d",
+        ease: "power2.out",
+        stagger: { each: 0.05, from: "start" },
+      },
+      "<",
+    );
+  });
+
+  // 2. Items: clipPath lateral → chars desde abajo
+  items.forEach((item, i) => {
+    const textEl = item.querySelector(".space-features__item-text");
+    if (!textEl) return;
+
+    const pos = 1.5 + i * 0.55;
+
+    // Línea y contenido crecen de izquierda a derecha
+    tl.to(item, { clipPath: "inset(0 0% 0 0)", duration: 0.8, ease: "power3.inOut" }, pos);
+
+    // Caracteres emergen desde abajo
+    const split = new SplitText(textEl, { type: "chars, lines", mask: "lines" });
+    tl.from(
+      split.chars,
+      {
+        duration: 0.3,
+        opacity: 0,
+        yPercent: 100,
+        clipPath: "inset(0 0 100% 0)",
+        ease: "power2.out",
+        stagger: 0.05,
+      },
+      pos + 0.55,
+    );
+  });
+
+  // 3. Imagen se revela a mitad de la lista
+  tl.to(imageWrapper, { clipPath: "inset(0 0% 0 0%)", duration: 0.9, ease: "power3.out" }, 2.5);
+}
+
+/* ----- CORPORATE ----- */
+function initCorporate() {
+  const txtCorp = new SplitText(".corporate__title-line", { type: "chars, lines" });
+  const tlCorp = gsap.timeline({
+    scrollTrigger: {
+      trigger: ".corporate-training",
+      start: "top 60%",
+      toggleActions: "play none none reverse",
+    },
+  });
+  tlCorp
+    .from(txtCorp.chars, {
+      opacity: 0,
+      duration: 0.3,
+      yPercent: 100,
+      clipPath: "inset(0 0 100% 0)",
+      stagger: 0.05,
+      ease: "power3.out",
+    })
+    .from(".training-banner__pill", { opacity: 0, x: 800, skewX: -50, stagger: 0.5, duration: 0.8, ease: "elastic.out" });
+}
+
 /* ----- INICI ----- */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -609,5 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initMobileMenu();
     initHeaderAnimations();
     iniciChefName();
+    initSpaceFeatures();
+    initCorporate();
   });
 });

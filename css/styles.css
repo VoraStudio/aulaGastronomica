@@ -858,6 +858,7 @@ h4 {
   }
   .chef-profile {
     margin-top: 0; /* o el espacio que quieras */
+    margin-bottom: 7rem;
   }
   .chef-profile__name {
     align-self: center;
@@ -884,9 +885,14 @@ h4 {
   grid-template-columns: 1fr;
   gap: var(--sp-48);
   align-items: center;
+  padding-bottom: var(--sp-48);
 }
 
 @media (width >= 48rem) {
+  .space-features__content {
+    gap: var(--sp-64);
+  }
+
   .space-features__container {
     grid-template-columns: 1fr 1fr;
   }
@@ -895,13 +901,25 @@ h4 {
 .space-features__content {
   display: flex;
   flex-direction: column;
-  gap: var(--sp-32);
+  gap: var(--sp-40);
+  perspective: 1200px;
+  transform-style: preserve-3d;
 }
 
 .space-features__title {
   font-family: var(--ff-titulos);
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(3.5rem, 6vw, 4.5rem);
   font-weight: var(--fw-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  text-align: center;
+}
+
+.space-features__title-line {
+  display: block;
+  transform-style: preserve-3d;
+  margin-top: -1.5rem;
 }
 
 .space-features__list {
@@ -913,20 +931,34 @@ h4 {
 
 .space-features__item {
   font-family: var(--ff-textos);
-  font-size: var(--fs-lg);
-  font-weight: var(--fw-light);
-  padding-block: var(--sp-16);
+  font-size: clamp(1.3rem, 2.5vw, 2.2rem);
+  font-weight: var(--fw-medium);
+  padding-top: var(--sp-16);
+  position: relative;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.7);
   border-bottom: 1.5px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: var(--tr-base);
+}
+.space-features__item:hover {
+  border-bottom: 1.5px solid rgba(255, 255, 255, 1);
+  color: rgba(255, 255, 255, 1);
 }
 
 .space-features__item:last-child {
   border-bottom: none;
 }
 
+.space-features__item-text {
+  display: block;
+}
+
 .space-features__image-wrapper {
   border-radius: var(--radius-lg);
   overflow: hidden;
   aspect-ratio: 4/5;
+  clip-path: inset(0 0 0 100%);
 }
 
 .space-features__img {
@@ -939,38 +971,57 @@ h4 {
    CORPORATE TRAINING
    ======================================== */
 
+.corporate-training {
+  width: 100%;
+  height: 100vh;
+  background-color: var(--azul-oscuro);
+  display: grid;
+  grid-template-rows: 11vh 89vh;
+  margin-bottom: var(--sp-48);
+}
+
+.corporate__title {
+  font-family: var(--ff-titulos);
+  font-weight: var(--fw-medium);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  text-align: center;
+}
+
+.corporate__title-line {
+  text-align: center;
+  display: block;
+  font-size: clamp(4.3rem, 6vw, 6rem);
+}
+
 .corporate-training__banners {
   display: flex;
   flex-direction: column;
 }
 
 .training-banner {
-  height: 350px;
+  height: 300px;
   background-size: cover;
   background-position: center;
   background-attachment: scroll;
   position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  justify-content: flex-end;
   overflow: hidden;
-}
-
-@media (width >= 48rem) {
-  .training-banner {
-    background-attachment: fixed; /* Parallax effect on desktop */
-  }
 }
 
 .training-banner__overlay {
   position: absolute;
   inset: 0;
   background-color: rgba(40, 60, 91, 0.55);
-  transition: background-color var(--tr-base);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.5s ease-out;
 }
 
 .training-banner:hover .training-banner__overlay {
-  background-color: rgba(40, 60, 91, 0.4);
+  clip-path: inset(80% 0 0 0);
 }
 
 .training-banner__content {
@@ -979,27 +1030,48 @@ h4 {
 }
 
 .training-banner__pill {
-  display: inline-block;
-  background-color: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  display: block;
   color: var(--blanco);
   font-family: var(--ff-titulos);
-  font-size: clamp(1.25rem, 3.5vw, 2.25rem);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
   font-weight: var(--fw-medium);
-  padding: var(--sp-16) var(--sp-40);
-  border-radius: 100px;
-  transition: all var(--tr-base);
+  padding: var(--sp-4) var(--sp-16);
   cursor: pointer;
+  transform: skewX(-10deg);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-.training-banner:hover .training-banner__pill {
-  background-color: var(--blanco);
-  color: var(--azul-oscuro);
-  border-color: var(--blanco);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+.training-banner__pill:hover {
+  color: var(--blanco);
+  cursor: pointer;
+  transform: skewX(0deg);
+}
+
+@media (width >= 48rem) {
+  .corporate-training {
+    grid-template-rows: 15vh 1fr;
+    margin: 5rem 0;
+    height: auto;
+  }
+  .training-banner {
+    background-attachment: fixed; /* Parallax effect on desktop */
+    height: 40vh;
+  }
+  .training-banner__pill {
+    display: block;
+    color: var(--blanco);
+    font-family: var(--ff-titulos);
+    font-weight: var(--fw-medium);
+    padding: var(--sp-4) var(--sp-16);
+    transition: all var(--tr-base);
+    cursor: pointer;
+    transform: skewX(-10deg);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    padding-right: var(--sp-128);
+    width: auto;
+    overflow: visible;
+    opacity: 1;
+  }
 }
 
 /* ========================================
