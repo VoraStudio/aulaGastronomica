@@ -608,7 +608,7 @@ function iniciChefName() {
 
   let tl = gsap.timeline({
     scrollTrigger: {
-      trigger: ".chef-profile",
+      trigger: ".chef-profile__name",
       start: "top 85%",
       toggleActions: "play none none reverse",
     },
@@ -624,14 +624,14 @@ function iniciChefName() {
   tl.to(
     quoteSplit.lines,
     {
-      duration: 0.7,
+      duration: 1,
       opacity: 1,
       y: 0,
       rotateX: 0,
       ease: "power3.out",
-      stagger: 0.09,
+      stagger: 0.2,
     },
-    "<1",
+    "<0.5",
   );
   if (sloganSplit) {
     tl.to(
@@ -658,13 +658,12 @@ function initChefMenu() {
   const imageWrapper = document.querySelector(".chef-menu__image-wrapper");
   if (!section || !title || !links.length || !imageWrapper) return;
 
-  // Split title into lines
-  const titleSplit = new SplitText(title, { type: "lines" });
-  gsap.set(titleSplit.lines, { opacity: 0, y: 30 });
+  // Split title into chars (mismo efecto que QUIM CASELLAS)
+  const titleSplit = new SplitText(title, { type: "chars, lines" });
 
   // Array to hold splits and lines for each menu link
   const linkData = [];
-  links.forEach(link => {
+  links.forEach((link) => {
     const textEl = link.querySelector(".chef-menu__link-text");
     const lineEl = link.querySelector(".chef-menu__line");
 
@@ -681,42 +680,55 @@ function initChefMenu() {
       trigger: section,
       start: "top 75%",
       toggleActions: "play none none reverse",
-    }
+    },
   });
 
   // 1. Center Title reveal
-  tl.to(titleSplit.lines, {
-    opacity: 1,
-    y: 0,
-    duration: 0.8,
-    ease: "power3.out",
-    stagger: 0.15
+  tl.from(titleSplit.chars, {
+    duration: 0.6,
+    opacity: 0,
+    yPercent: 100,
+    clipPath: "inset(0 0 100% 0)",
+    ease: "power2.out",
+    stagger: { each: 0.06, from: "start" },
   });
 
   // 2. Image Clip Path Reveal from left to right
-  tl.to(imageWrapper, {
-    clipPath: "inset(0 0% 0 0)",
-    duration: 1.4,
-    ease: "power4.inOut"
-  }, "-=0.6");
+  tl.to(
+    imageWrapper,
+    {
+      clipPath: "inset(0 0% 0 0)",
+      duration: 1.4,
+      ease: "power4.inOut",
+    },
+    "-=0.9",
+  );
 
   // 3. Sequential link items entrance (text fades/slides, line draws)
   linkData.forEach((data, index) => {
     // Text lines reveal
-    tl.to(data.textSplit.lines, {
-      opacity: 1,
-      y: 0,
-      duration: 0.6,
-      ease: "power2.out",
-      stagger: 0.1
-    }, `-=${index === 0 ? 0.8 : 0.4}`);
+    tl.to(
+      data.textSplit.lines,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power2.out",
+        stagger: 0.1,
+      },
+      `-=${index === 0 ? 0.8 : 0.4}`,
+    );
 
     // Underline draws itself from left to right
-    tl.to(data.lineEl, {
-      scaleX: 1,
-      duration: 0.6,
-      ease: "power2.out"
-    }, "<0.2");
+    tl.to(
+      data.lineEl,
+      {
+        scaleX: 1,
+        duration: 0.6,
+        ease: "power2.out",
+      },
+      "<0.2",
+    );
   });
 }
 
