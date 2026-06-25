@@ -50,7 +50,6 @@ function initHeaderAnimations() {
 }
 
 /* ----- INICI SECCIÓ MENÚ HAMBURGUESA ----- */
-
 function initMobileMenu() {
   const menuToggle = document.querySelector(".menu-toggle");
   const mobileNav = document.querySelector(".mobile-nav");
@@ -218,27 +217,31 @@ function initHeroGridReveal() {
 function getExpandVars() {
   const container = document.getElementById("expanding-video-container");
   const header = document.querySelector(".header");
-  if (!container || !header) return null;
+  const hero = document.querySelector(".hero");
+  if (!container || !header || !hero) return null;
 
   const headerH = header.offsetHeight;
 
-  // Medidas del layout real (offsetWidth/Height ignoran transform CSS)
-  const width = container.offsetWidth;
-  const height = container.offsetHeight;
-  if (width === 0 || height === 0) return null;
-
-  // Posición real en viewport sin transformaciones CSS
+  // Eliminar transform temporalmente para leer la posición NATURAL del layout
   const savedTransform = container.style.transform;
   container.style.transform = "";
+  const width = container.offsetWidth;
+  const height = container.offsetHeight;
   const rect = container.getBoundingClientRect();
+  const heroRect = hero.getBoundingClientRect();
   container.style.transform = savedTransform;
+
+  if (width === 0 || height === 0) return null;
+
+  const localTop = rect.top - heroRect.top;
+  const localLeft = rect.left - heroRect.left;
 
   const scaleX = window.innerWidth / width;
   const scaleY = (window.innerHeight - headerH) / height;
   const scale = Math.max(scaleX, scaleY);
 
-  const x = -rect.left + (width * (scale - 1)) / 2;
-  const y = headerH - (rect.top + height) + height * scale;
+  const x = -localLeft + (window.innerWidth - width) / 2;
+  const y = headerH - localTop;
 
   return { scale, x, y };
 }
@@ -252,34 +255,40 @@ function initVideoExpand() {
   mm.add("(max-width: 47.999rem)", () => {
     const leftItem = document.querySelector(".hero__grid-item--left");
     const header = document.querySelector(".header");
-    if (!leftItem || !header) return;
+    const hero = document.querySelector(".hero");
+    if (!leftItem || !header || !hero) return;
 
     leftItem.style.overflow = "visible";
+    gsap.set(leftItem, { transformOrigin: "50% 0%", scale: 1, x: 0, y: 0, borderRadius: "" });
 
     function getMobileVars() {
-      const width = leftItem.offsetWidth;
-      const height = leftItem.offsetHeight;
-      if (width === 0 || height === 0) return null;
-
+      // Eliminar transform temporalmente para leer la posición NATURAL
       const savedTransform = leftItem.style.transform;
       leftItem.style.transform = "";
+      const width = leftItem.offsetWidth;
+      const height = leftItem.offsetHeight;
       const rect = leftItem.getBoundingClientRect();
+      const heroRect = hero.getBoundingClientRect();
       leftItem.style.transform = savedTransform;
+
+      if (width === 0 || height === 0) return null;
+
+      const localTop = rect.top - heroRect.top;
+      const localLeft = rect.left - heroRect.left;
 
       const scaleX = window.innerWidth / width;
       const scaleY = window.innerHeight / height;
       const scale = Math.max(scaleX, scaleY);
-      const y = -rect.top;
 
-      return { scale, y };
+      const x = -localLeft + (window.innerWidth - width) / 2;
+      const y = -localTop;
+
+      return { scale, x, y };
     }
 
     let mobileVars = getMobileVars();
     if (!mobileVars) return;
 
-    gsap.set(leftItem, { transformOrigin: "50% 0%" });
-
-    // Pin: cubre hero + buffer para animación
     const pinScrollEnd = window.innerHeight * 2;
 
     const pinST = ScrollTrigger.create({
@@ -292,7 +301,6 @@ function initVideoExpand() {
       invalidateOnRefresh: true,
     });
 
-    // Expansión: arranca desde scroll 0, se completa en los primeros 100vh
     const expandTl = gsap.timeline({
       scrollTrigger: {
         trigger: ".hero",
@@ -300,8 +308,8 @@ function initVideoExpand() {
         end: window.innerHeight,
         scrub: 1.5,
         invalidateOnRefresh: true,
-        onRefresh: () => {
-          mobileVars = getMobileVars();
+        onLeaveBack: () => {
+          gsap.set(leftItem, { scale: 1, x: 0, y: 0, borderRadius: "" });
         },
         onComplete: () => {
           initIntroScrubSetup();
@@ -310,9 +318,19 @@ function initVideoExpand() {
     });
 
     expandTl.to(".hero__header, .hero__middle, .hero__badge-wrapper", { opacity: 0, y: -30, duration: 0.3 }, 0);
-    expandTl.to(leftItem, { scale: () => mobileVars.scale, y: () => mobileVars.y, borderRadius: 0, ease: "power2.inOut", duration: 1 }, 0);
+    expandTl.fromTo(
+      leftItem,
+      { transformOrigin: "50% 0%", scale: 1, x: 0, y: 0, borderRadius: "" },
+      { scale: () => mobileVars.scale, x: () => mobileVars.x, y: () => mobileVars.y, borderRadius: 0, ease: "power2.inOut", duration: 1 },
+      0,
+    );
 
-    // Refrescar en resize
+    const onGlobalRefresh = () => {
+      const newVars = getMobileVars();
+      if (newVars) mobileVars = newVars;
+    };
+    ScrollTrigger.addEventListener("refresh", onGlobalRefresh);
+
     let resizeTimer;
     const onResize = () => {
       clearTimeout(resizeTimer);
@@ -324,6 +342,7 @@ function initVideoExpand() {
 
     return () => {
       window.removeEventListener("resize", onResize);
+      ScrollTrigger.removeEventListener("refresh", onGlobalRefresh);
       clearTimeout(resizeTimer);
     };
   });
@@ -332,16 +351,18 @@ function initVideoExpand() {
   mm.add("(min-width: 48rem)", () => {
     const container = document.getElementById("expanding-video-container");
     const header = document.querySelector(".header");
-    if (!container || !header) return;
+    const hero = document.querySelector(".hero");
+    if (!container || !header || !hero) return;
 
     container.style.overflow = "visible";
+
+    // Estado inicial limpio para que GSAP registre el from correcto
+    gsap.set(container, { transformOrigin: "50% 0%", scale: 1, x: 0, y: 0, borderRadius: "" });
 
     let expandVars = getExpandVars();
     if (!expandVars) return;
 
-    gsap.set(container, { transformOrigin: "50% 100%" });
-
-    // --- Expansion tween (scrub, sin pin) ---
+    // --- Expansion tween (scrub) ---
     const expandTl = gsap.timeline({
       scrollTrigger: {
         trigger: ".hero",
@@ -349,8 +370,8 @@ function initVideoExpand() {
         end: "+=100vh",
         scrub: 3,
         invalidateOnRefresh: true,
-        onRefresh: () => {
-          expandVars = getExpandVars();
+        onLeaveBack: () => {
+          gsap.set(container, { scale: 1, x: 0, y: 0, borderRadius: "" });
         },
       },
     });
@@ -359,8 +380,9 @@ function initVideoExpand() {
 
     expandTl.to(".hero__header, .hero__middle, .hero__badge-wrapper", { opacity: 0, y: -30, duration: 0.3 }, 0);
 
-    expandTl.to(
+    expandTl.fromTo(
       container,
+      { transformOrigin: "50% 0%", scale: 1, x: 0, y: 0, borderRadius: "" },
       { scale: () => expandVars.scale, x: () => expandVars.x, y: () => expandVars.y, borderRadius: 0, ease: "power2.inOut", duration: 1 },
       0,
     );
@@ -368,7 +390,7 @@ function initVideoExpand() {
     // --- Pin: cubre expansión + reveal ---
     const pinScrollEnd = window.innerHeight + 1200;
 
-    heroDesktopPin = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: ".hero",
       start: "top top",
       end: `+=${pinScrollEnd}`,
@@ -377,7 +399,14 @@ function initVideoExpand() {
       invalidateOnRefresh: true,
     });
 
-    // Refrescar ScrollTrigger tras resize para recalcular expand vars
+    // Recalcular vars tras refresh global (después de que todos los pins estén fijados)
+    const onGlobalRefresh = () => {
+      const newVars = getExpandVars();
+      if (newVars) expandVars = newVars;
+    };
+    ScrollTrigger.addEventListener("refresh", onGlobalRefresh);
+
+    // Refrescar ScrollTrigger tras resize
     let resizeTimer;
     const onResize = () => {
       clearTimeout(resizeTimer);
@@ -389,6 +418,7 @@ function initVideoExpand() {
 
     return () => {
       window.removeEventListener("resize", onResize);
+      ScrollTrigger.removeEventListener("refresh", onGlobalRefresh);
       clearTimeout(resizeTimer);
     };
   });
@@ -470,6 +500,7 @@ let introSplits = null;
 let heroDesktopPin = null;
 
 function initIntroScrubSetup() {
+  if (introSplits) return; // evitar inicializaciones duplicadas
   const titleEl = document.querySelector(".hero__intro-title");
   const linkTexts = document.querySelectorAll(".hero__intro-link-text");
   if (!titleEl || !linkTexts.length) return;
@@ -562,16 +593,23 @@ function createIntroReveal() {
 function iniciChefName() {
   const nom = document.querySelector(".chef-profile__name");
   const quote = document.querySelector(".chef-profile__quote");
+  const slogan = document.querySelector(".chef-profile__slogan");
   if (!nom) return;
 
   const split = new SplitText(nom, { type: "chars, lines" });
-  const quoteSplit = new SplitText(quote, { type: "chars" });
-  gsap.set(quoteSplit.chars, { opacity: 0 });
+  const quoteSplit = new SplitText(quote, { type: "words, lines" });
+  gsap.set(quoteSplit.lines, { opacity: 0, y: 30, rotateX: -60, yPercent: 0, transformOrigin: "center top" });
+
+  let sloganSplit = null;
+  if (slogan) {
+    sloganSplit = new SplitText(slogan, { type: "words, lines" });
+    gsap.set(sloganSplit.lines, { opacity: 0, y: 30, rotateX: -60, yPercent: 0, transformOrigin: "center top" });
+  }
 
   let tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".chef-profile",
-      start: "center 60%",
+      start: "top 85%",
       toggleActions: "play none none reverse",
     },
   });
@@ -584,16 +622,102 @@ function iniciChefName() {
     stagger: { each: 0.1, from: "start" },
   });
   tl.to(
-    quoteSplit.chars,
+    quoteSplit.lines,
     {
-      duration: 0.5,
+      duration: 0.7,
       opacity: 1,
       y: 0,
+      rotateX: 0,
       ease: "power3.out",
-      stagger: { each: 0.07, from: "start" },
+      stagger: 0.09,
     },
-    "<0.5",
+    "<1",
   );
+  if (sloganSplit) {
+    tl.to(
+      sloganSplit.lines,
+      {
+        duration: 1,
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        ease: "back.out(1.7)",
+        stagger: 0.08,
+      },
+      "-=0.3",
+    );
+  }
+}
+
+/* ----- GASTRONOMIC MENU ----- */
+
+function initChefMenu() {
+  const section = document.querySelector(".chef-menu");
+  const title = document.querySelector(".chef-menu__title");
+  const links = document.querySelectorAll(".chef-menu__link");
+  const imageWrapper = document.querySelector(".chef-menu__image-wrapper");
+  if (!section || !title || !links.length || !imageWrapper) return;
+
+  // Split title into lines
+  const titleSplit = new SplitText(title, { type: "lines" });
+  gsap.set(titleSplit.lines, { opacity: 0, y: 30 });
+
+  // Array to hold splits and lines for each menu link
+  const linkData = [];
+  links.forEach(link => {
+    const textEl = link.querySelector(".chef-menu__link-text");
+    const lineEl = link.querySelector(".chef-menu__line");
+
+    // Pre-hide text (split into lines) and underline (scale horizontally)
+    const textSplit = new SplitText(textEl, { type: "lines" });
+    gsap.set(textSplit.lines, { opacity: 0, y: 15 });
+    gsap.set(lineEl, { scaleX: 0, transformOrigin: "left center" });
+
+    linkData.push({ textSplit, lineEl });
+  });
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top 75%",
+      toggleActions: "play none none reverse",
+    }
+  });
+
+  // 1. Center Title reveal
+  tl.to(titleSplit.lines, {
+    opacity: 1,
+    y: 0,
+    duration: 0.8,
+    ease: "power3.out",
+    stagger: 0.15
+  });
+
+  // 2. Image Clip Path Reveal from left to right
+  tl.to(imageWrapper, {
+    clipPath: "inset(0 0% 0 0)",
+    duration: 1.4,
+    ease: "power4.inOut"
+  }, "-=0.6");
+
+  // 3. Sequential link items entrance (text fades/slides, line draws)
+  linkData.forEach((data, index) => {
+    // Text lines reveal
+    tl.to(data.textSplit.lines, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: "power2.out",
+      stagger: 0.1
+    }, `-=${index === 0 ? 0.8 : 0.4}`);
+
+    // Underline draws itself from left to right
+    tl.to(data.lineEl, {
+      scaleX: 1,
+      duration: 0.6,
+      ease: "power2.out"
+    }, "<0.2");
+  });
 }
 
 /* ----- SPACE FEATURES ----- */
@@ -608,7 +732,8 @@ function initSpaceFeatures() {
   // Header reveal: logo clipPath curtain reveal
   const logo = document.querySelector(".space-features__logo-img");
   if (logo) {
-    gsap.fromTo(logo,
+    gsap.fromTo(
+      logo,
       { clipPath: "inset(0% 50% 0% 50%)", opacity: 0 },
       {
         clipPath: "inset(0% 0% 0% 0%)",
@@ -619,8 +744,8 @@ function initSpaceFeatures() {
           trigger: logo,
           start: "top 85%",
           toggleActions: "play none none reverse",
-        }
-      }
+        },
+      },
     );
   }
 
@@ -639,12 +764,12 @@ function initSpaceFeatures() {
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
-      }
+      },
     });
 
     tl.to(track, {
       x: -scrollLength,
-      ease: "none"
+      ease: "none",
     });
 
     return () => {
@@ -720,12 +845,12 @@ function initCorporate() {
   });
   tlCorp
     .from(txtCorp.chars, {
+      duration: 0.7,
       opacity: 0,
-      duration: 0.3,
       yPercent: 100,
       clipPath: "inset(0 0 100% 0)",
-      stagger: 0.05,
-      ease: "power3.out",
+      ease: "power2.out",
+      stagger: { each: 0.1, from: "start" },
     })
     .fromTo(
       ".training-banner__pill",
@@ -743,7 +868,6 @@ function initActivities() {
   if (!section || !titleLines.length || !imageWrapper) return;
 
   // Estados iniciales
-  gsap.set(imageWrapper, { clipPath: "inset(0 100% 0 0)" });
   gsap.set(texts, { opacity: 0, y: 20 });
 
   const tl = gsap.timeline({
@@ -753,9 +877,6 @@ function initActivities() {
       toggleActions: "play none none reverse",
     },
   });
-
-  // 1. Reveal image
-  tl.to(imageWrapper, { clipPath: "inset(0 0% 0 0%)", duration: 1.2, ease: "power3.inOut" });
 
   // 2. Title: 3D fan-in
   titleLines.forEach((line, index) => {
@@ -772,18 +893,22 @@ function initActivities() {
         ease: "power3.out",
         stagger: { each: 0.03 },
       },
-      index === 0 ? "-=0.8" : "<0.1"
+      index === 0 ? "-=0.8" : "<0.1",
     );
   });
 
   // 3. Paragraphs reveal
-  tl.to(texts, {
-    opacity: 1,
-    y: 0,
-    stagger: 0.2,
-    duration: 0.6,
-    ease: "power3.out"
-  }, "-=0.4");
+  tl.to(
+    texts,
+    {
+      opacity: 1,
+      y: 0,
+      stagger: 0.2,
+      duration: 0.6,
+      ease: "power3.out",
+    },
+    "-=0.4",
+  ).from(imageWrapper, { opacity: 0, y: 0, scale: 0.8, duration: 5, ease: "power3.out" }, "<-1");
 }
 
 /* ----- CTA ----- */
@@ -875,7 +1000,7 @@ function initIntroDetails() {
   const linkLines = document.querySelectorAll(".intro-details__line");
   if (!section || !title || !paragraphs.length) return;
 
-  links.forEach(link => {
+  links.forEach((link) => {
     const textEl = link.querySelector(".intro-details__link-text");
     if (textEl) textEl.style.setProperty("visibility", "visible", "important");
   });
@@ -893,7 +1018,7 @@ function initIntroDetails() {
       opacity: 0,
       rotationX: -90,
       transformOrigin: "top center",
-      transformStyle: "preserve-3d"
+      transformStyle: "preserve-3d",
     });
     return split;
   });
@@ -902,8 +1027,8 @@ function initIntroDetails() {
     scrollTrigger: {
       trigger: section,
       start: "top 75%",
-      toggleActions: "play none none reverse"
-    }
+      toggleActions: "play none none reverse",
+    },
   });
 
   tl.to(titleSplit.chars, {
@@ -911,48 +1036,51 @@ function initIntroDetails() {
     y: 0,
     stagger: 0.02,
     duration: 0.6,
-    ease: "power3.out"
+    ease: "power3.out",
   });
 
-  tl.to(paragraphs, {
-    opacity: 1,
-    y: 0,
-    stagger: 0.15,
-    duration: 0.8,
-    ease: "power3.out"
-  }, "-=0.4");
+  tl.to(
+    paragraphs,
+    {
+      opacity: 1,
+      y: 0,
+      stagger: 0.15,
+      duration: 0.8,
+      ease: "power3.out",
+    },
+    "-=0.4",
+  );
 
   linkSplits.forEach((split, index) => {
-    tl.to(split.words, {
-      opacity: 1,
-      rotationX: 0,
-      stagger: 0.05,
-      duration: 0.6,
-      ease: "power3.out"
-    }, index === 0 ? "-=0.4" : "<0.15");
+    tl.to(
+      split.words,
+      {
+        opacity: 1,
+        rotationX: 0,
+        stagger: 0.05,
+        duration: 0.6,
+        ease: "power3.out",
+      },
+      index === 0 ? "-=0.4" : "<0.15",
+    );
   });
 
-  tl.to(linkLines, {
-    scaleX: 1,
-    stagger: 0.1,
-    duration: 0.6,
-    ease: "power3.out"
-  }, "-=0.3");
+  tl.to(
+    linkLines,
+    {
+      scaleX: 1,
+      stagger: 0.1,
+      duration: 0.6,
+      ease: "power3.out",
+    },
+    "-=0.3",
+  );
 
   // MorphSVG background logo watermark animation
   if (typeof MorphSVGPlugin !== "undefined") {
     gsap.registerPlugin(MorphSVGPlugin);
 
-    const paths = [
-      "#logo-path-1",
-      "#logo-path-2",
-      "#logo-path-3",
-      "#logo-path-4",
-      "#logo-path-5",
-      "#logo-path-6",
-      "#logo-path-7",
-      "#logo-path-8"
-    ];
+    const paths = ["#logo-path-1", "#logo-path-2", "#logo-path-3", "#logo-path-4", "#logo-path-5", "#logo-path-6", "#logo-path-7", "#logo-path-8"];
 
     paths.forEach((pathId, idx) => {
       const targetId = `#wave-target-${idx + 1}`;
@@ -966,8 +1094,8 @@ function initIntroDetails() {
             trigger: section,
             start: "top bottom",
             end: "bottom top",
-            scrub: 1.5
-          }
+            scrub: 1.5,
+          },
         });
       }
     });
@@ -987,6 +1115,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initMobileMenu();
     initHeaderAnimations();
     iniciChefName();
+    initChefMenu();
     initIntroDetails();
     initSpaceFeatures();
     initCorporate();
