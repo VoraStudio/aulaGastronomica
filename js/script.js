@@ -79,6 +79,7 @@ function initMobileMenu() {
     isMenuOpen = !isMenuOpen;
     menuToggle.classList.toggle("is-active");
     mobileNav.classList.toggle("is-open");
+    document.body.classList.toggle("no-scroll", isMenuOpen);
 
     const tl = gsap.timeline();
 
@@ -541,9 +542,6 @@ function createIntroReveal() {
   const heroEl = document.querySelector(".hero");
   if (!heroEl) return;
 
-  const heroTop = heroEl.offsetTop;
-  const expansionEnd = heroTop + window.innerHeight;
-
   const { titleSplit, allLinkWords } = introSplits;
 
   // Timeline pausada — ScrollTrigger la controla
@@ -583,10 +581,17 @@ function createIntroReveal() {
 
   ScrollTrigger.create({
     trigger: heroEl,
-    start: expansionEnd,
-    end: expansionEnd + 1,
+    start: () => {
+      const heroTop = heroEl.offsetTop;
+      return heroTop + window.innerHeight;
+    },
+    end: () => {
+      const heroTop = heroEl.offsetTop;
+      return heroTop + window.innerHeight + 1;
+    },
     toggleActions: "restart none none reset",
     animation: introTl,
+    invalidateOnRefresh: true,
   });
 }
 
@@ -741,24 +746,72 @@ function initSpaceFeatures() {
 
   const mm = gsap.matchMedia();
 
-  // Header reveal: logo clipPath curtain reveal
+  // Header reveal: logo clipPath curtain reveal + badge fade-in
   const logo = document.querySelector(".space-features__logo-img");
+  const badge = document.querySelector(".space-features__badge");
+  const indicator = document.querySelector(".space-features__scroll-indicator");
+  const galleryItems = document.querySelectorAll(".space-features__gallery-item");
+  const arrows = document.querySelectorAll(".gallery-arrow");
+  gsap.set(arrows, { opacity: 0, scale: 0.8 });
+  gsap.set(galleryItems, { opacity: 0, scale: 0.92 });
+  gsap.set(indicator, { opacity: 0, y: 20 });
   if (logo) {
-    gsap.fromTo(
-      logo,
-      { clipPath: "inset(0% 50% 0% 50%)", opacity: 0 },
-      {
-        clipPath: "inset(0% 0% 0% 0%)",
-        opacity: 1,
-        duration: 3,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: logo,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
-        },
+    const headerTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: logo,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
       },
-    );
+    });
+    gsap.set(badge, { opacity: 0, y: 40 });
+    headerTl
+      .fromTo(
+        logo,
+        { clipPath: "inset(0% 50% 0% 50%)", opacity: 0 },
+        { clipPath: "inset(0% 0% 0% 0%)", opacity: 1, duration: 2.5, ease: "power4.out" },
+      )
+      .to(
+        badge,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 2,
+          ease: "power3.out",
+        },
+        "<0.5",
+      )
+      // Scroll-indicator text reveal (sin pausa)
+      .to(
+        indicator,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.7,
+          ease: "power3.out",
+        },
+        "<0.9",
+      )
+      // Gallery items stagger reveal (sin pausa)
+      .to(
+        galleryItems,
+        {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.12,
+          duration: 5,
+          ease: "power3.out",
+        },
+        "<",
+      )
+
+      // Flechas de navegación (ocultas hasta la galería, solo visibles en móvil por CSS)
+      .to(arrows, {
+        opacity: 1,
+        scale: 1,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: "back.out(1.7)",
+      });
   }
 
   // Desktop horizontal scroll trigger
@@ -830,6 +883,50 @@ function initSpaceFeatures() {
 
     updateButtons();
 
+    // Swipe Touch Gestures
+    let startX = 0;
+    let currentX = 0;
+    let isDragging = false;
+    let originalTrackX = 0;
+
+    wrapper.addEventListener(
+      "touchstart",
+      (e) => {
+        startX = e.touches[0].clientX;
+        originalTrackX = gsap.getProperty(track, "x");
+        isDragging = true;
+      },
+      { passive: true },
+    );
+
+    wrapper.addEventListener(
+      "touchmove",
+      (e) => {
+        if (!isDragging) return;
+        currentX = e.touches[0].clientX;
+        const diffX = currentX - startX;
+        gsap.set(track, { x: originalTrackX + diffX });
+      },
+      { passive: true },
+    );
+
+    wrapper.addEventListener("touchend", (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      const diffX = currentX - startX;
+      const threshold = 50; // pixels to trigger slide change
+
+      if (Math.abs(diffX) > threshold) {
+        if (diffX < 0) {
+          goTo(currentIndex + 1);
+        } else {
+          goTo(currentIndex - 1);
+        }
+      } else {
+        goTo(currentIndex);
+      }
+    });
+
     // Recalcular en resize
     const onResize = () => {
       const currentOffset = currentIndex * getSlideWidth();
@@ -847,10 +944,14 @@ function initSpaceFeatures() {
 
 /* ----- CORPORATE ----- */
 function initCorporate() {
-  const txtCorp = new SplitText(".corporate__title-line", { type: "chars, lines" });
+  const corpSection = document.querySelector(".corporate-training");
+  const corpTitle = document.querySelector(".corporate__title-line");
+  if (!corpSection || !corpTitle) return;
+
+  const txtCorp = new SplitText(corpTitle, { type: "chars, lines" });
   const tlCorp = gsap.timeline({
     scrollTrigger: {
-      trigger: ".corporate-training",
+      trigger: corpSection,
       start: "top 60%",
       toggleActions: "play none none reverse",
     },
@@ -996,9 +1097,10 @@ function initCtaRipple() {
       const rect = btn.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
+      const isSolid = btn.classList.contains("btn--cta--solid");
 
       gsap.to(fill, { scale: 0, x: relX, y: relY, duration: 0.8, ease: "power5.out", overwrite: "auto" });
-      gsap.to(text, { color: darkBlue, duration: 0.8, overwrite: "auto" });
+      gsap.to(text, { color: isSolid ? white : darkBlue, duration: 0.8, overwrite: "auto" });
     });
   });
 }
