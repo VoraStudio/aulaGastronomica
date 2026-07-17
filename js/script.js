@@ -429,7 +429,7 @@ function initVideoExpand() {
 function initHeroMiddleEffects() {
   const badge = document.querySelector(".hero__badge");
   const badgeText = document.querySelector(".hero__badge-text");
-  const buttons = document.querySelectorAll(".hero__actions .btn");
+  const buttons = document.querySelectorAll(".hero__actions .btn--cta");
   if (!badge || !buttons.length) return;
 
   // Activar will-change només per l'entrada
@@ -438,6 +438,7 @@ function initHeroMiddleEffects() {
 
   // Estat inicial: tot invisible, preparat per l'entrada
   gsap.set(badge, { opacity: 0, scale: 0.85, y: 20 });
+  gsap.set(buttons, { opacity: 0, y: 30 });
 
   // SplitText del badge ANTES de animar
   let badgeSplit = null;
@@ -734,6 +735,31 @@ function initChefMenu() {
       },
       "<0.2",
     );
+  });
+
+  // Image swap on hover
+  const chefImg = document.querySelector(".chef-menu__img");
+  if (!chefImg) return;
+
+  links.forEach((link) => {
+    const imgSrc = link.dataset.image;
+    if (!imgSrc) return;
+
+    link.addEventListener("mouseenter", () => {
+      chefImg.style.opacity = "0";
+      setTimeout(() => {
+        chefImg.src = imgSrc;
+        chefImg.style.opacity = "1";
+      }, 180);
+    });
+
+    link.addEventListener("mouseleave", () => {
+      chefImg.style.opacity = "0";
+      setTimeout(() => {
+        chefImg.src = "img/pexels-kampus-8629123.webp";
+        chefImg.style.opacity = "1";
+      }, 180);
+    });
   });
 }
 
@@ -1075,32 +1101,28 @@ function initCtaRipple() {
   const buttons = document.querySelectorAll(".btn--cta");
   if (!buttons.length) return;
 
-  const style = getComputedStyle(document.documentElement);
-  const white = style.getPropertyValue("--blanco").trim();
-  const darkBlue = style.getPropertyValue("--azul-oscuro").trim();
-
   buttons.forEach((btn) => {
     const fill = btn.querySelector(".btn--cta__fill");
-    const text = btn.querySelector(".btn--cta__text");
-    if (!fill || !text) return;
+    if (!fill) return;
+
+    const isHero = btn.classList.contains("btn--cta--hero");
+    const enterDuration = isHero ? 8 : 4;
+    const leaveDuration = isHero ? 0.3 : 0.8;
 
     btn.addEventListener("mouseenter", (e) => {
       const rect = btn.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
 
-      gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: 4, ease: "power5.in", overwrite: "auto" });
-      gsap.to(text, { color: white, duration: 0.8, overwrite: "auto" });
+      gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: enterDuration, ease: "power2.out", overwrite: "auto" });
     });
 
     btn.addEventListener("mouseleave", (e) => {
       const rect = btn.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
-      const isSolid = btn.classList.contains("btn--cta--solid");
 
-      gsap.to(fill, { scale: 0, x: relX, y: relY, duration: 0.8, ease: "power5.out", overwrite: "auto" });
-      gsap.to(text, { color: isSolid ? white : darkBlue, duration: 0.8, overwrite: "auto" });
+      gsap.to(fill, { scale: 0, x: relX, y: relY, duration: leaveDuration, ease: "power2.out", overwrite: "auto" });
     });
   });
 }

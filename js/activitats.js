@@ -504,18 +504,14 @@ function initCTA() {
     .to(footerBtns, { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }, "<0.1");
 }
 
+/* ----- RIPPLE BTN ----- */
 function initCtaRipple() {
   const buttons = document.querySelectorAll(".btn--cta");
   if (!buttons.length) return;
 
-  const style = getComputedStyle(document.documentElement);
-  const white = style.getPropertyValue("--blanco").trim();
-  const darkBlue = style.getPropertyValue("--azul-oscuro").trim();
-
   buttons.forEach((btn) => {
     const fill = btn.querySelector(".btn--cta__fill");
-    const text = btn.querySelector(".btn--cta__text");
-    if (!fill || !text) return;
+    if (!fill) return;
 
     btn.addEventListener("mouseenter", (e) => {
       const rect = btn.getBoundingClientRect();
@@ -523,7 +519,6 @@ function initCtaRipple() {
       const relY = e.clientY - rect.top;
 
       gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: 4, ease: "power5.in", overwrite: "auto" });
-      gsap.to(text, { color: darkBlue, duration: 0.5 });
     });
 
     btn.addEventListener("mouseleave", (e) => {
@@ -532,7 +527,6 @@ function initCtaRipple() {
       const relY = e.clientY - rect.top;
 
       gsap.to(fill, { x: relX, y: relY, scale: 0, duration: 0.6, ease: "power2.out", overwrite: "auto" });
-      gsap.to(text, { color: white, duration: 0.5 });
     });
   });
 }

@@ -179,6 +179,7 @@ function initCTA() {
     .to(footerBtns, { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }, "<0.1");
 }
 
+/* ----- RIPPLE BTN ----- */
 function initCtaRipple() {
   const buttons = document.querySelectorAll(".btn--cta");
   if (!buttons.length) return;
@@ -198,7 +199,7 @@ function initCtaRipple() {
       const relY = e.clientY - rect.top;
 
       gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: 4, ease: "power5.in", overwrite: "auto" });
-      gsap.to(text, { color: white, duration: 0.8, overwrite: "auto" });
+      gsap.to(text, { color: darkBlue, duration: 0.8, overwrite: "auto" });
     });
 
     btn.addEventListener("mouseleave", (e) => {
