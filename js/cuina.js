@@ -309,15 +309,19 @@ function initLabCorbiPoly() {
 
   if (!section) return;
 
-  gsap.to(document.body, {
-    backgroundColor: "#faf6eaff",
-    scrollTrigger: {
-      trigger: section,
-      start: "top 80%",
-      end: "top 30%",
-      scrub: true,
-    },
-  });
+  gsap.fromTo(document.body,
+    { backgroundColor: "#aed4ff" },
+    {
+      backgroundColor: "#faf6eaff",
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: section,
+        start: "top 80%",
+        end: "top 30%",
+        scrub: true,
+      },
+    }
+  );
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -331,14 +335,13 @@ function initLabCorbiPoly() {
     gsap.set(btn, { opacity: 0, y: 20 });
   }
 
-  let splitText, splitList;
+  let splitText;
   if (text) {
     splitText = new SplitText(".lab-corbi-poly__text", { type: "lines" });
     gsap.set(splitText.lines, { opacity: 0, y: 20 });
   }
   if (listItems.length > 0) {
-    splitList = new SplitText(".lab-corbi-poly__list li", { type: "lines" });
-    gsap.set(splitList.lines, { opacity: 0, y: 20 });
+    gsap.set(listItems, { opacity: 0, y: 15, "--border-scale": 0 });
   }
 
   if (titleLine) {
@@ -385,13 +388,14 @@ function initLabCorbiPoly() {
     );
   }
 
-  if (splitList) {
+  if (listItems.length > 0) {
     tl.to(
-      splitList.lines,
+      listItems,
       {
         opacity: 1,
         y: 0,
-        stagger: 0.3,
+        "--border-scale": 1,
+        stagger: 0.25,
         duration: 0.8,
         ease: "power3.out",
       },
@@ -415,15 +419,298 @@ function initLabCorbiPoly() {
   }
 }
 
+function initLabCorbiCreacio() {
+  const section = document.querySelector(".lab-corbi-creacio");
+  const titleLines = document.querySelectorAll(".lab-corbi-creacio__title-line");
+  const text = document.querySelector(".lab-corbi-creacio__text");
+  const subtext = document.querySelector(".lab-corbi-creacio__subtext");
+  const listItems = document.querySelectorAll(".lab-corbi-creacio__list li");
+  const image = document.querySelector(".lab-corbi-creacio__img-wrapper");
+
+  if (!section) return;
+
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top 75%",
+      toggleActions: "play none none reverse",
+    },
+  });
+
+  let splitText, splitSubtext, splitList;
+
+  if (text) {
+    splitText = new SplitText(text, { type: "lines" });
+    gsap.set(splitText.lines, { opacity: 0, y: 20 });
+  }
+
+  if (subtext) {
+    splitSubtext = new SplitText(subtext, { type: "lines" });
+    gsap.set(splitSubtext.lines, { opacity: 0, y: 20 });
+  }
+
+  if (listItems.length > 0) {
+    gsap.set(listItems, { opacity: 0, y: 20 });
+  }
+
+  if (titleLines.length > 0) {
+    titleLines.forEach((line) => {
+      const splitTitle = new SplitText(line, { type: "words,chars" });
+      tl.from(
+        splitTitle.chars,
+        {
+          duration: 0.8,
+          opacity: 0,
+          rotationX: 90,
+          rotationY: (i) => (i % 2 === 0 ? -12 : 12),
+          transformOrigin: "center center",
+          transformStyle: "preserve-3d",
+          ease: "power3.out",
+          stagger: { each: 0.025 },
+        },
+        "-=0.6",
+      );
+    });
+  }
+
+  tl.addLabel("contentStart", "-=0.4");
+
+  if (image) {
+    tl.to(
+      image,
+      {
+        clipPath: "inset(0% 0% 0% 0%)",
+        duration: 2,
+        ease: "power3.inOut",
+      },
+      "contentStart",
+    );
+  }
+
+  if (splitText) {
+    tl.to(
+      splitText.lines,
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.2,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "contentStart+=0.2",
+    );
+  }
+
+  if (splitSubtext) {
+    tl.to(
+      splitSubtext.lines,
+      {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "power3.out",
+      },
+      "-=0.4",
+    );
+  }
+
+  if (listItems.length > 0) {
+    tl.to(
+      listItems,
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.3",
+    );
+  }
+}
+
+function initLabCorbiTarifes() {
+  const section = document.querySelector(".lab-corbi-tarifes");
+  const textHighlight = document.querySelector(".lab-corbi-tarifes__text-highlight");
+  const text = document.querySelector(".lab-corbi-tarifes__text");
+  const btn = document.querySelector(".lab-corbi-tarifes__btn-wrapper");
+  const items = document.querySelectorAll(".lab-corbi-tarifes__item");
+  const footerText = document.querySelector(".lab-corbi-tarifes__footer p");
+
+  if (!section) return;
+
+  // 1. Animación de cambio de color del fondo del body
+  gsap.fromTo(document.body,
+    { backgroundColor: "#faf6eaff" },
+    {
+      backgroundColor: "#aed4ff",
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: section,
+        start: "top 80%",
+        end: "top 30%",
+        scrub: true,
+      },
+    }
+  );
+
+  // 2. Timeline para las animaciones internas de entrada
+  const tl = gsap.timeline({
+    scrollTrigger: {
+      trigger: section,
+      start: "top 75%",
+      toggleActions: "play none none reverse",
+    },
+  });
+
+  let splitHighlight, splitText, splitFooter;
+
+  if (textHighlight) {
+    splitHighlight = new SplitText(textHighlight, { type: "lines" });
+    gsap.set(splitHighlight.lines, { opacity: 0, y: 20 });
+  }
+
+  if (text) {
+    splitText = new SplitText(text, { type: "lines" });
+    gsap.set(splitText.lines, { opacity: 0, y: 20 });
+  }
+
+  if (btn) {
+    gsap.set(btn, { opacity: 0, scale: 0.9, y: 10 });
+  }
+
+  if (items.length > 0) {
+    items.forEach((item) => {
+      const info = item.querySelector(".lab-corbi-tarifes__item-info");
+      const action = item.querySelector(".lab-corbi-tarifes__item-action");
+      if (info) gsap.set(info, { opacity: 0, x: -20 });
+      if (action) gsap.set(action, { opacity: 0, x: 20 });
+      gsap.set(item, { "--border-scale": 0 });
+    });
+  }
+
+  if (footerText) {
+    splitFooter = new SplitText(footerText, { type: "lines" });
+    gsap.set(splitFooter.lines, { opacity: 0, y: 15 });
+  }
+
+  // Ejecución de la animación en el Timeline
+  if (splitHighlight) {
+    tl.to(
+      splitHighlight.lines,
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.2,
+        duration: 0.8,
+        ease: "power3.out",
+      }
+    );
+  }
+
+  if (splitText) {
+    tl.to(
+      splitText.lines,
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.2,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.4"
+    );
+  }
+
+  if (btn) {
+    tl.to(
+      btn,
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 0.6,
+        ease: "back.out(1.7)",
+      },
+      "-=0.4"
+    );
+  }
+
+  // Animación en cascada de los items de la lista
+  if (items.length > 0) {
+    items.forEach((item, index) => {
+      const info = item.querySelector(".lab-corbi-tarifes__item-info");
+      const action = item.querySelector(".lab-corbi-tarifes__item-action");
+      
+      tl.addLabel(`itemStart_${index}`, index === 0 ? "-=0.3" : ">-0.1");
+
+      tl.to(
+        item,
+        {
+          "--border-scale": 1,
+          duration: 0.6,
+          ease: "power3.out",
+        },
+        `itemStart_${index}`
+      );
+
+      if (info) {
+        tl.to(
+          info,
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.6,
+            ease: "power3.out",
+          },
+          `itemStart_${index}`
+        );
+      }
+
+      if (action) {
+        tl.to(
+          action,
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.6,
+            ease: "power3.out",
+          },
+          `itemStart_${index}`
+        );
+      }
+    });
+  }
+
+  if (splitFooter) {
+    tl.to(
+      splitFooter.lines,
+      {
+        opacity: 1,
+        y: 0,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: "power3.out",
+      },
+      "-=0.2"
+    );
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   document.fonts.ready.then(() => {
     gsap.set(document.body, { backgroundColor: "#aed4ff" });
-    initHeaderAnimations();
-    initMobileMenu();
-    initCTA();
-    initCtaRipple();
-    initLabCorbiAnimations();
-    initLabCorbiHighlight();
-    initLabCorbiPoly();
+    // Damos un pequeño margen para que la rejilla CSS y el layout responsive se asienten antes de inicializar SplitText y ScrollTrigger.
+    setTimeout(() => {
+      initHeaderAnimations();
+      initMobileMenu();
+      initCTA();
+      initCtaRipple();
+      initLabCorbiAnimations();
+      initLabCorbiHighlight();
+      initLabCorbiPoly();
+      initLabCorbiCreacio();
+      initLabCorbiTarifes();
+    }, 100);
   });
 });

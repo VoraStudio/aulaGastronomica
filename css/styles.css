@@ -86,7 +86,7 @@ body {
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
   color: var(--azul-oscuro);
-  background-color: var(--azul-oscuro);
+  background-color: var(--azul-claro);
   overflow-x: hidden;
   transition: background-color 1s ease;
 }
@@ -3120,6 +3120,8 @@ html.js-enabled .intro-details__link-text {
   width: 100%;
   height: 1.5px;
   background-color: rgba(40, 60, 91, 0.15);
+  transform: scaleX(var(--border-scale, 0));
+  transform-origin: left center;
 }
 
 .lab-corbi-poly__list li::after {
@@ -3141,6 +3143,267 @@ html.js-enabled .intro-details__link-text {
 .lab-corbi-poly__list li:last-child::before,
 .lab-corbi-poly__list li:last-child::after {
   display: none;
+}
+
+/* Crear Contingut Section */
+.lab-corbi-creacio {
+  background-color: transparent;
+  padding-block: var(--sp-64) var(--sp-64);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 1s ease;
+}
+
+.lab-corbi-creacio__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-48);
+  width: 100%;
+}
+
+.lab-corbi-creacio__col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lab-corbi-creacio__title {
+  font-family: var(--ff-titulos);
+  font-size: clamp(3rem, 5vw, 5.5rem);
+  font-weight: var(--fw-light);
+  color: var(--azul-oscuro);
+  line-height: 1.1;
+  margin-bottom: var(--sp-32);
+}
+
+.lab-corbi-creacio__title-line {
+  display: block;
+  text-align: center;
+}
+
+.lab-corbi-creacio__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-corbi-creacio__text {
+  font-family: var(--ff-textos);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  font-weight: 600;
+  color: var(--azul-oscuro);
+  line-height: 1.5;
+  margin-bottom: var(--sp-24);
+}
+
+.lab-corbi-creacio__subtext {
+  font-family: var(--ff-textos);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  font-weight: 600;
+  color: var(--azul-oscuro);
+  margin-bottom: var(--sp-12);
+}
+
+.lab-corbi-creacio__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+}
+
+.lab-corbi-creacio__list li {
+  font-family: var(--ff-textos);
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  color: var(--azul-oscuro);
+  font-weight: 500;
+  position: relative;
+  padding-left: var(--sp-24);
+  line-height: 1.4;
+}
+
+.lab-corbi-creacio__list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--azul-oscuro);
+  font-size: 1.3em;
+  line-height: 1;
+  top: -0.05em;
+}
+
+.lab-corbi-creacio__img-wrapper {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(40, 60, 91, 0.06);
+  width: 100%;
+  clip-path: inset(0% 0% 100% 0%);
+  aspect-ratio: 1.2 / 1;
+}
+
+.lab-corbi-creacio__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Tarifes Section */
+.lab-corbi-tarifes {
+  background-color: transparent;
+  padding-block: var(--sp-64) var(--sp-64);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 1s ease;
+}
+
+.lab-corbi-tarifes__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--sp-48);
+  width: 100%;
+}
+
+.lab-corbi-tarifes__col {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lab-corbi-tarifes__intro {
+  margin-bottom: var(--sp-8);
+}
+
+.lab-corbi-tarifes__text-highlight {
+  font-family: var(--ff-titulos);
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  font-weight: var(--fw-semibold);
+  color: var(--azul-oscuro);
+  line-height: 1.3;
+  margin-bottom: var(--sp-16);
+}
+
+.lab-corbi-tarifes__text {
+  font-family: var(--ff-textos);
+  font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+  font-weight: var(--fw-medium);
+  color: var(--azul-oscuro);
+  line-height: 1.5;
+}
+
+.lab-corbi-tarifes__btn-wrapper {
+  margin-top: var(--sp-16);
+}
+
+/* Modificadores para el CTA oscuro */
+.btn--cta--dark {
+  background-color: var(--azul-oscuro) !important;
+  border-color: var(--azul-oscuro) !important;
+}
+
+.btn--cta--dark .btn--cta__text {
+  color: var(--blanco) !important;
+}
+
+.btn--cta--dark .btn--cta__fill {
+  background-color: var(--blanco) !important;
+}
+
+.btn--cta--dark:hover .btn--cta__text {
+  color: var(--azul-oscuro) !important;
+}
+
+.lab-corbi-tarifes__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.lab-corbi-tarifes__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-block: var(--sp-16);
+  position: relative;
+  overflow: hidden;
+}
+
+.lab-corbi-tarifes__item::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  background-color: rgba(40, 60, 91, 0.15);
+  transform: scaleX(var(--border-scale, 0));
+  transform-origin: left center;
+}
+
+.lab-corbi-tarifes__item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lab-corbi-tarifes__item-title {
+  font-family: var(--ff-textos);
+  font-size: clamp(1.1rem, 1.4vw, 1.25rem);
+  font-weight: var(--fw-semibold);
+  color: var(--azul-oscuro);
+  line-height: 1.2;
+}
+
+.lab-corbi-tarifes__item-price {
+  font-family: var(--ff-textos);
+  font-size: clamp(0.9rem, 1.1vw, 1rem);
+  font-style: italic;
+  font-weight: var(--fw-medium);
+  color: rgba(40, 60, 91, 0.8);
+}
+
+.lab-corbi-tarifes__item-price span {
+  font-size: 0.8em;
+  opacity: 0.85;
+}
+
+.btn--reservar {
+  font-family: var(--ff-terciaria);
+  font-size: 0.8rem;
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.05em;
+  color: var(--azul-oscuro);
+  text-decoration: none;
+  border: 1px solid rgba(40, 60, 91, 0.35);
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  transition: all var(--tr-base);
+  display: inline-block;
+  background-color: transparent;
+}
+
+.btn--reservar:hover {
+  background-color: var(--azul-oscuro);
+  color: var(--blanco);
+  border-color: var(--azul-oscuro);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(40, 60, 91, 0.1);
+}
+
+.lab-corbi-tarifes__footer {
+  margin-top: var(--sp-24);
+  text-align: center;
+  width: 100%;
+}
+
+.lab-corbi-tarifes__footer p {
+  font-family: var(--ff-textos);
+  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+  color: var(--azul-oscuro);
+  line-height: 1.5;
+  opacity: 0.95;
+  max-width: 80%;
+  margin-inline: auto;
 }
 
 @media (width >= 48rem) {
@@ -3171,5 +3434,58 @@ html.js-enabled .intro-details__link-text {
 
   .lab-corbi-poly__title {
     margin-bottom: var(--sp-48);
+  }
+
+  .lab-corbi-creacio__title-line {
+    display: block;
+    text-align: left;
+  }
+
+  .lab-corbi-creacio {
+    padding-block: var(--sp-96);
+  }
+
+  .lab-corbi-creacio__title {
+    margin-bottom: var(--sp-24);
+    max-width: 80%;
+  }
+
+  .lab-corbi-creacio__grid {
+    grid-template-columns: 1.3fr 1.2fr;
+    gap: var(--sp-16);
+    align-items: center;
+  }
+
+  .lab-corbi-creacio__img-wrapper {
+    aspect-ratio: 1.2 / 1;
+  }
+
+  .lab-corbi-tarifes {
+    padding-block: var(--sp-96);
+  }
+
+  .lab-corbi-tarifes__grid {
+    grid-template-columns: 1.1fr 1.3fr;
+    gap: var(--sp-64);
+    align-items: flex-start;
+  }
+
+  .lab-corbi-tarifes__intro {
+    margin-bottom: var(--sp-48);
+  }
+
+  .lab-corbi-tarifes__footer {
+    margin-top: var(--sp-80);
+  }
+
+  .lab-corbi-tarifes__text-highlight {
+    font-family: var(--ff-titulos);
+    font-size: clamp(1.4rem, 2.1vw, 2rem);
+    font-weight: var(--fw-semibold);
+    color: var(--azul-oscuro);
+    line-height: 1.3;
+    margin-bottom: var(--sp-8);
+    margin-top: var(--sp-96);
+    width: 100%;
   }
 }
