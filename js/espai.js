@@ -398,14 +398,9 @@ function initCtaRipple() {
   const buttons = document.querySelectorAll(".btn--cta");
   if (!buttons.length) return;
 
-  const style = getComputedStyle(document.documentElement);
-  const white = style.getPropertyValue("--blanco").trim();
-  const darkBlue = style.getPropertyValue("--azul-oscuro").trim();
-
   buttons.forEach((btn) => {
     const fill = btn.querySelector(".btn--cta__fill");
-    const text = btn.querySelector(".btn--cta__text");
-    if (!fill || !text) return;
+    if (!fill) return;
 
     btn.addEventListener("mouseenter", (e) => {
       const rect = btn.getBoundingClientRect();
@@ -413,17 +408,14 @@ function initCtaRipple() {
       const relY = e.clientY - rect.top;
 
       gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: 4, ease: "power5.in", overwrite: "auto" });
-      gsap.to(text, { color: white, duration: 0.8, overwrite: "auto" });
     });
 
     btn.addEventListener("mouseleave", (e) => {
       const rect = btn.getBoundingClientRect();
       const relX = e.clientX - rect.left;
       const relY = e.clientY - rect.top;
-      const isSolid = btn.classList.contains("btn--cta--solid");
 
-      gsap.to(fill, { scale: 0, x: relX, y: relY, duration: 0.8, ease: "power5.out", overwrite: "auto" });
-      gsap.to(text, { color: isSolid ? white : darkBlue, duration: 0.8, overwrite: "auto" });
+      gsap.to(fill, { x: relX, y: relY, scale: 0, duration: 0.8, ease: "power5.out", overwrite: "auto" });
     });
   });
 }

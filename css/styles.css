@@ -86,7 +86,7 @@ body {
   font-weight: var(--fw-regular);
   line-height: var(--lh-normal);
   color: var(--azul-oscuro);
-  background-color: var(--azul-claro);
+  background-color: var(--azul-oscuro);
   overflow-x: hidden;
   transition: background-color 1s ease;
 }
@@ -487,6 +487,8 @@ h4 {
   gap: var(--sp-24);
   align-items: center;
   margin-top: -1rem;
+  position: relative;
+  z-index: 10;
 }
 
 @media (width >=48rem) {
@@ -642,7 +644,7 @@ h4 {
     padding-block: var(--sp-8);
     margin-top: calc(var(--sp-16) * -1);
     padding-bottom: var(--sp-80);
-    gap: var(--sp-4);
+    gap: var(--sp-2);
   }
 
   .hero__grid-item--center,
@@ -653,7 +655,7 @@ h4 {
   .hero__grid-item {
     aspect-ratio: 4/3;
     width: 100%;
-    max-width: min(100%, 560px);
+    max-width: min(100%, 600px);
     max-height: 280px;
     border-radius: var(--radius-md);
     overflow: hidden;
@@ -699,7 +701,7 @@ h4 {
   grid-template-columns: 1fr;
   gap: var(--sp-48);
   align-items: center;
-  pointer-events: auto;
+  pointer-events: none;
   opacity: 0;
   height: 100vh;
   width: 100%;
@@ -767,6 +769,7 @@ h4 {
     justify-self: center;
     padding-bottom: var(--sp-8);
     font-size: var(--fs-base);
+    pointer-events: none;
   }
 
   .hero__intro-link {
@@ -1132,7 +1135,7 @@ h4 {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--azul-claro);
+  background-color: var(--azul-oscuro);
   transform: translateX(-101%);
   transition: transform var(--tr-base);
 }
@@ -1142,7 +1145,7 @@ h4 {
 }
 
 .chef-menu__link:hover {
-  color: var(--azul-claro);
+  color: var(--azul-oscuro);
 }
 
 .chef-menu__image-wrapper {
@@ -1152,6 +1155,14 @@ h4 {
   border-radius: var(--radius-lg);
   overflow: hidden;
   clip-path: inset(0 100% 0 0); /* Initial state for slide from left reveal */
+}
+
+.chef-menu__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.35s ease;
 }
 
 /* ========================================
@@ -1486,7 +1497,7 @@ h4 {
 .parallax-section__bg {
   position: absolute;
   inset: -30% 0;
-  background-image: url("../img/pexels-kampus-8629107.webp");
+  background-image: url("../img/AulaGastronomica_juny2026_29.webp");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -2050,12 +2061,34 @@ h4 {
 .btn--cta--solid {
   background-color: var(--azul-oscuro) !important;
   color: var(--blanco);
-  border-color: var(--azul-oscuro) !important;
 }
 
 .btn--cta--solid:hover {
-  background-color: var(--azul-claro) !important;
   color: var(--azul-oscuro) !important;
+  outline: solid 1px var(--azul-oscuro);
+}
+
+/* Hero modifier for CTA button */
+.btn--cta--hero {
+  background-color: var(--azul-oscuro) !important;
+  border-color: var(--azul-oscuro) !important;
+  color: var(--blanco) !important;
+  flex: none;
+}
+
+.btn--cta--hero .btn--cta__fill {
+  background-color: var(--blanco);
+}
+.cta__actions .btn--cta__fill {
+  background-color: var(--azul-claro);
+}
+.vista-360__btn .btn--cta__fill,
+.tarifes__btn .btn--cta__fill,
+.lab-corbi-poly__btn-wrapper .btn--cta__fill {
+  background-color: var(--azul-claro);
+}
+.btn--form-submit .btn--cta__fill {
+  background-color: var(--azul-claro);
 }
 
 /* Footer structure */
@@ -2086,6 +2119,7 @@ h4 {
 .cta__footer-row--bottom {
   gap: var(--sp-16);
   padding-top: var(--sp-8);
+  align-items: flex-end;
 }
 
 @media (width >= 48rem) {
@@ -2101,7 +2135,7 @@ h4 {
 
   .cta__footer-row--bottom {
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     gap: var(--sp-8);
     padding: var(--sp-8) 0;
@@ -2111,22 +2145,23 @@ h4 {
 .cta__footer-legal-block {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-end;
   gap: var(--sp-16);
+  text-align: right;
 }
 
 @media (width >= 48rem) {
   .cta__footer-legal-block {
-    flex-direction: row;
-    gap: var(--sp-16);
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    gap: var(--sp-4);
   }
 }
 
 /* Footer Logo positioning */
 .cta__footer-logo {
   display: flex;
-  align-items: center;
-  align-self: flex-start;
 }
 
 .cta__footer-logo-img {
@@ -2194,6 +2229,7 @@ h4 {
 
   .cta__legal-text {
     padding-left: var(--sp-16);
+    text-align: center;
   }
 }
 
@@ -2373,7 +2409,7 @@ h4 {
 
   .space-features__scroll-indicator {
     top: var(--sp-32);
-    pointer-events: auto;
+    pointer-events: none;
   }
 
   .space-features__scroll-indicator span {
@@ -3247,6 +3283,7 @@ html.js-enabled .intro-details__link-text {
   height: 100%;
   object-fit: cover;
   display: block;
+  object-position: 50% 80%;
 }
 
 /* Tarifes Section */
@@ -4074,7 +4111,9 @@ body.no-scroll {
   border-radius: 0;
   padding: 8px 0;
   width: 100%;
-  transition: border-color 0.3s ease, padding-left 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    padding-left 0.3s ease;
 }
 
 .form-input::placeholder {
@@ -4182,5 +4221,3 @@ body.no-scroll {
 .form-link:hover {
   opacity: 0.8;
 }
-
-
