@@ -1,0 +1,38 @@
+/* ============================================
+   tarifes.css — Estilos exclusivos de tarifes.html
+   ============================================ */
+
+/* Ambas secciones sin background para que se vea la transición del body */
+.tarifes {
+  background-color: transparent;
+}
+
+.lab-corbi-tarifes {
+  background-color: transparent;
+}
+
+/* Título de la sección LAB CORBÍ */
+.lab-corbi-tarifes__heading {
+  font-family: var(--ff-titulos);
+  font-size: clamp(3rem, 4vw, 6rem);
+  font-weight: var(--fw-bold);
+  color: var(--azul-oscuro);
+  text-align: left;
+  margin-bottom: 2rem;
+  line-height: 1.2;
+}
+
+.tarifes__title-line {
+  font-size: clamp(3rem, 4vw, 6rem);
+  font-weight: var(--fw-bold);
+}
+
+@media (width > 64rem) {
+  .tarifes {
+    padding: 10rem 2rem 5rem;
+  }
+
+  .lab-corbi-tarifes__heading {
+    margin-bottom: 7rem;
+  }
+}
