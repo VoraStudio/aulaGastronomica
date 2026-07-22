@@ -293,8 +293,51 @@ function setupFormHandler() {
   const feedback = form.querySelector(".contacte-form__feedback");
   const submitBtn = form.querySelector(".btn--form-submit");
 
+  // Validación client-side con resaltado rojo y focus
+  function clearErrors() {
+    form.querySelectorAll(".form-input--error").forEach(el => el.classList.remove("form-input--error"));
+    form.querySelectorAll(".form-checkbox--error").forEach(el => el.classList.remove("form-checkbox--error"));
+  }
+
+  function markError(el) {
+    if (el.type === "checkbox") {
+      el.classList.add("form-checkbox--error");
+    } else {
+      el.classList.add("form-input--error");
+    }
+  }
+
+  function validateForm() {
+    clearErrors();
+
+    const name = form.querySelector("#form-name");
+    const email = form.querySelector("#form-email");
+    const subject = form.querySelector("#form-subject");
+    const message = form.querySelector("#form-message");
+    const privacy = form.querySelector("#privacy");
+
+    if (!name.value.trim()) { markError(name); name.focus(); return false; }
+    if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) { markError(email); email.focus(); return false; }
+    if (!subject.value.trim()) { markError(subject); subject.focus(); return false; }
+    if (!message.value.trim()) { markError(message); message.focus(); return false; }
+    if (!privacy.checked) { markError(privacy); privacy.focus(); return false; }
+
+    return true;
+  }
+
+  // Limpiar error al escribir
+  form.querySelectorAll(".form-input").forEach(el => {
+    el.addEventListener("input", () => el.classList.remove("form-input--error"));
+  });
+  const privacyChk = form.querySelector("#privacy");
+  if (privacyChk) {
+    privacyChk.addEventListener("change", () => privacyChk.classList.remove("form-checkbox--error"));
+  }
+
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
 
     // Deshabilitem botó i mostrem estat d'enviament
     submitBtn.setAttribute("disabled", "true");
@@ -313,45 +356,31 @@ function setupFormHandler() {
         submitBtn.removeAttribute("disabled");
         submitBtn.querySelector(".btn--cta__text").textContent = originalText;
 
-        feedback.style.display = "block";
         if (data.ok) {
           form.reset();
-          feedback.className = "contacte-form__feedback contacte-form__feedback--success";
-          feedback.textContent = data.message || "Gràcies pel teu missatge! Ens posarem en contacte aviat.";
+          createToast(
+            "Missatge enviat",
+            data.message || "Gràcies pel teu missatge! Ens posarem en contacte aviat.",
+            "success"
+          );
         } else {
-          feedback.className = "contacte-form__feedback contacte-form__feedback--error";
-          feedback.textContent = data.error || "S'ha produït un error al processar el formulari.";
+          createToast(
+            "Error en el formulari",
+            data.error || "S'ha produït un error al processar el formulari.",
+            "error"
+          );
         }
-
-        gsap.fromTo(feedback,
-          { opacity: 0, y: -10, scale: 0.98 },
-          { opacity: 1, y: 0, scale: 1, duration: 0.4, ease: "back.out(1.5)" }
-        );
-
-        // Amagar missatge després de 8 segons
-        setTimeout(() => {
-          gsap.to(feedback, {
-            opacity: 0,
-            y: -10,
-            scale: 0.98,
-            duration: 0.3,
-            ease: "power2.in",
-            onComplete: () => {
-              feedback.style.display = "none";
-            }
-          });
-        }, 8000);
       })
       .catch(error => {
         console.error("Error enviant el formulari:", error);
         submitBtn.removeAttribute("disabled");
         submitBtn.querySelector(".btn--cta__text").textContent = originalText;
 
-        feedback.style.display = "block";
-        feedback.className = "contacte-form__feedback contacte-form__feedback--error";
-        feedback.textContent = "Error de connexió amb el servidor. Torna-ho a provar.";
-        
-        gsap.fromTo(feedback, { opacity: 0, y: -10 }, { opacity: 1, y: 0, duration: 0.3 });
+        createToast(
+          "Error de connexió",
+          "Error de connexió amb el servidor. Torna-ho a provar.",
+          "error"
+        );
       });
     };
 
@@ -467,5 +496,95 @@ function initCtaRipple() {
       gsap.to(fill, { x: relX, y: relY, scale: 0, duration: 0.6, ease: "power2.out", overwrite: "auto" });
       gsap.to(text, { color: white, duration: 0.5 });
     });
+  });
+}
+
+/* ----- SISTEMA DE TOASTS EN CATALÀ ----- */
+function createToast(title, message, type = "success", duration = 6000) {
+  let container = document.querySelector(".toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast toast--${type}`;
+
+  let iconSvg = "";
+  if (type === "success") {
+    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+  } else if (type === "error") {
+    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+  } else {
+    iconSvg = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+  }
+
+  toast.innerHTML = `
+    <div class="toast__icon">${iconSvg}</div>
+    <div class="toast__content">
+      <div class="toast__title">${title}</div>
+      <div class="toast__message">${message}</div>
+    </div>
+    <button class="toast__close" aria-label="Tancar">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="toast__progress"></div>
+  `;
+
+  container.appendChild(toast);
+
+  // Animació d'entrada amb GSAP
+  gsap.fromTo(toast,
+    { x: 100, opacity: 0, scale: 0.9 },
+    { x: 0, opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.2)" }
+  );
+
+  const progress = toast.querySelector(".toast__progress");
+  const progressTween = gsap.fromTo(progress,
+    { scaleX: 1 },
+    { scaleX: 0, duration: duration / 1000, ease: "none" }
+  );
+
+  let remainingTime = duration;
+  let startTime = Date.now();
+  let timeoutId;
+
+  const dismissToast = () => {
+    progressTween.kill();
+    gsap.to(toast, {
+      x: 100,
+      opacity: 0,
+      scale: 0.9,
+      duration: 0.35,
+      ease: "power2.in",
+      onComplete: () => {
+        toast.remove();
+      }
+    });
+  };
+
+  // Botó de tancar
+  toast.querySelector(".toast__close").addEventListener("click", dismissToast);
+
+  // Auto-dismiss inicial
+  timeoutId = setTimeout(dismissToast, duration);
+
+  // Pausar quan es passa el ratolí per sobre
+  toast.addEventListener("mouseenter", () => {
+    progressTween.pause();
+    clearTimeout(timeoutId);
+    remainingTime -= Date.now() - startTime;
+  });
+
+  // Re-iniciar quan el ratolí surt
+  toast.addEventListener("mouseleave", () => {
+    if (remainingTime > 0) {
+      progressTween.play();
+      startTime = Date.now();
+      timeoutId = setTimeout(dismissToast, remainingTime);
+    } else {
+      dismissToast();
+    }
   });
 }

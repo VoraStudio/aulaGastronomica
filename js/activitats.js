@@ -209,33 +209,39 @@ function initMobileMenu() {
 function initHeroAnimations() {
   const titleLine = document.querySelector(".activitats-hero__title-line");
   const subtext = document.querySelector(".activitats-hero__subtext");
-
   if (!titleLine) return;
+
+  gsap.set(titleLine, { opacity: 1, visibility: "visible" });
 
   const tl = gsap.timeline();
 
-  const splitTitle = new SplitText(titleLine, { type: "words,chars" });
+  const splitTitle = new SplitText(titleLine, { type: "chars" });
   tl.from(splitTitle.chars, {
-    duration: 0.8,
+    duration: 1.2,
     opacity: 0,
     rotationX: 90,
-    rotationY: (i) => (i % 2 === 0 ? -12 : 12),
+    rotationY: (i) => (i % 2 === 0 ? -15 : 15),
     transformOrigin: "center center",
     transformStyle: "preserve-3d",
-    ease: "power3.out",
-    stagger: { each: 0.035 }
+    ease: "power2.out",
+    stagger: { each: 0.09, from: "start" },
   });
 
   if (subtext) {
-    const splitSubtext = new SplitText(subtext, { type: "lines" });
-    gsap.set(splitSubtext.lines, { opacity: 0, y: 15 });
-    tl.to(splitSubtext.lines, {
+    gsap.set(subtext, { opacity: 1, visibility: "visible" });
+    const subSplit = new SplitText(subtext, { type: "lines" });
+    gsap.set(subSplit.lines, {
+      opacity: 0,
+      rotationX: 90,
+      transformOrigin: "bottom center",
+    });
+    tl.to(subSplit.lines, {
+      duration: 2.5,
       opacity: 1,
-      y: 0,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.3");
+      rotationX: 0,
+      ease: "power3.out",
+      stagger: { each: 0.15, from: "start" },
+    }, "<0.8");
   }
 }
 
@@ -374,11 +380,7 @@ function openActivityModal(item) {
             <span>${formattedDate}</span>
           </li>
           <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
-            </svg>
+            <img src="img/logo/icone.svg" alt="" class="activity-modal__icon" width="22" height="22" />
             <span>${placesStr}</span>
           </li>
           <li>

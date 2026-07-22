@@ -42,6 +42,36 @@
         </a>
         <nav class="header__nav header__nav--right">
           <a href="contacte.html" class="header__link">Contacte</a>
+          
+          <!-- Selector d'idiomes desplegable -->
+          <div class="lang-dropdown">
+            <button class="lang-dropdown__btn" aria-haspopup="true" aria-expanded="false">
+              <span class="lang-flag lang-flag--ca"></span>
+              <span class="lang-dropdown__btn-text">CA</span>
+              <svg class="lang-dropdown__chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M1 1L5 5L9 1" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <div class="lang-dropdown__menu">
+              <a href="javascript:void(0)" class="lang-dropdown__item lang-dropdown__item--active" data-lang="ca">
+                <span class="lang-flag lang-flag--ca"></span>
+                <span>Català</span>
+              </a>
+              <a href="javascript:void(0)" class="lang-dropdown__item" data-lang="es">
+                <span class="lang-flag lang-flag--es"></span>
+                <span>Castellà</span>
+              </a>
+              <a href="javascript:void(0)" class="lang-dropdown__item" data-lang="en">
+                <span class="lang-flag lang-flag--en"></span>
+                <span>English</span>
+              </a>
+              <a href="javascript:void(0)" class="lang-dropdown__item" data-lang="fr">
+                <span class="lang-flag lang-flag--fr"></span>
+                <span>Français</span>
+              </a>
+            </div>
+          </div>
+
           <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" class="header__link header__link--icon" aria-label="Instagram">
             <svg
               width="20"
@@ -81,9 +111,10 @@
           <li><a href="contacte.html" class="mobile-link">CONTACTE</a></li>
         </ul>
         <div class="mobile-lang">
-          <button class="mobile-lang-btn mobile-lang-btn--active" data-lang="es"><span class="lang-flag lang-flag--es"></span>ES</button>
-          <button class="mobile-lang-btn" data-lang="ca"><span class="lang-flag lang-flag--ca"></span>CA</button>
+          <button class="mobile-lang-btn" data-lang="es"><span class="lang-flag lang-flag--es"></span>ES</button>
+          <button class="mobile-lang-btn mobile-lang-btn--active" data-lang="ca"><span class="lang-flag lang-flag--ca"></span>CA</button>
           <button class="mobile-lang-btn" data-lang="en"><span class="lang-flag lang-flag--en"></span>EN</button>
+          <button class="mobile-lang-btn" data-lang="fr"><span class="lang-flag lang-flag--fr"></span>FR</button>
         </div>
       </nav>
     </header>
@@ -241,6 +272,7 @@
       </div>
     </footer>
 
+    <script src="js/lang.js"></script>
     <script src="js/cms.js"></script>
     <script src="js/activitats.js"></script>
   </body>

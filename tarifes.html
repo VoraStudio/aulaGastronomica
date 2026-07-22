@@ -7,9 +7,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>LAB CORBÍ - Aula Gastronòmica Quim Casellas</title>
+    <title>Tarifes - Aula Gastronomica Quim Casellas</title>
 
-    <meta name="description" content="Lab Corbí és un espai gastronòmic de l'Aula Gastronòmica pensat per compartir, experimentar i crear." />
+    <meta name="description" content="" />
 
     <!-- Google Fonts: Playfair Display + Raleway + Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,6 +21,7 @@
 
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/tarifes.css" />
 
     <!-- GSAP Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -30,7 +31,7 @@
     <script src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/16327/MorphSVGPlugin3.min.js"></script>
   </head>
 
-  <body class="page-cuina">
+  <body>
     <header class="header" id="header">
       <div class="container header__container">
         <nav class="header__nav header__nav--left">
@@ -38,7 +39,7 @@
           <a href="espai.html" class="header__link">L'AULA</a>
           <a href="tarifes.html" class="header__link">TARIFES</a>
           <a href="activitats.html" class="header__link">ACTIVITATS</a>
-          <a href="cuina.html" class="header__link header__link--active">LAB CORBÍ</a>
+          <a href="cuina.html" class="header__link">LAB CORBÍ</a>
         </nav>
         <a href="index.html" class="header__logo" aria-label="Aula Gastronòmica Home">
           <img src="img/logo/logoIcon_blauFosc.svg" alt="Aula Gastronòmica" class="header__logo-img" />
@@ -100,7 +101,7 @@
         </button>
       </div>
 
-      <!-- Navegació Mòbil (Overlay) -->
+      <!-- Navegació Mòbil (Full Screen Overlay) -->
       <nav id="mobile-nav" class="mobile-nav" aria-label="Navegació mòbil">
         <div class="mobile-nav__logo">
           <a href="index.html" aria-label="Aula Gastronòmica Home">
@@ -124,153 +125,138 @@
       </nav>
     </header>
 
-    <main class="lab-corbi">
-      <div class="container lab-corbi__container">
-        <div class="lab-corbi__grid">
-          <!-- Títol de la Secció (a dalt en mòbil) -->
-          <div class="lab-corbi__title-container">
-            <div class="lab-corbi__title-wrapper">
-              <h1 class="lab-corbi__title">
-                <span class="lab-corbi__title-line">LAB CORBÍ</span>
-              </h1>
-              <img src="img/logo/logoIcon_blauFosc.svg" alt="Vora Studio Icona" class="lab-corbi__brand-icon lab-corbi__brand-icon--title" />
-            </div>
-            <div class="lab-corbi__subtitle-wrapper">
-              <p class="lab-corbi__subtitle">Un espai on les idees es cuinen abans d'arribar a la taula</p>
-              <img src="img/logo/logoIcon_blauFosc.svg" alt="Vora Studio Icona" class="lab-corbi__brand-icon lab-corbi__brand-icon--subtitle" />
-            </div>
-          </div>
-
-          <!-- Columna Esquerra: Fotos i Textos -->
-          <div class="lab-corbi__col lab-corbi__col--left">
-            <div class="lab-corbi__images-left">
-              <div class="lab-corbi__img-wrapper lab-corbi__img-wrapper--chef">
-                <img src="img/AulaGastronomica_juny2026_38.webp" alt="Xef Quim Casellas" class="lab-corbi__img" />
-              </div>
-              <div class="lab-corbi__img-wrapper lab-corbi__img-wrapper--kitchen-top">
-                <img src="img/AulaGastronomica_juny2026_16.webp" alt="Espai Lab Corbí" class="lab-corbi__img" />
-              </div>
-            </div>
-
-            <div class="lab-corbi__text-block">
-              <p class="lab-corbi__paragraph">
-                Hi ha cuines que serveixen per cuinar. I n'hi ha d'altres que serveixen perquè passin coses. Lab Corbí és un espai gastronòmic pensat
-                per compartir, experimentar i crear. Un lloc on cuiners, productors, empreses, creadors de contingut, alumnes i amants de la cuina es
-                troben al voltant d'un exactament mateix ingredient: la curiositat. Aquí, cada activitat és una oportunitat per descobrir, aprendre i
-                inspirar-se.
-              </p>
-            </div>
-          </div>
-
-          <!-- Columna Dreta: Foto Inferior -->
-          <div class="lab-corbi__col lab-corbi__col--right">
-            <div class="lab-corbi__img-wrapper lab-corbi__img-wrapper--kitchen-bottom">
-              <img src="img/AulaGastronomica_juny2026_31.webp" alt="Instal·lacions Lab Corbí" class="lab-corbi__img" />
-            </div>
-          </div>
-        </div>
-    </main>
-
-    <!-- Secció Text 100vh Il·luminat -->
-    <section class="lab-corbi-highlight">
-      <div class="container lab-corbi-highlight__container">
-        <div class="lab-corbi-highlight__text-wrapper">
-          <p class="lab-corbi-highlight__text">
-            Aquí els fogons no només encenen cassoles, també encenen converses. Cada demostració, cada tast, cada presentació o cada classe és una oportunitat per descobrir un producte, una tècnica o una història que mereix ser explicada.
+    <!-- Tarifes Section: L'Espai -->
+    <section class="tarifes" id="tarifes">
+      <div class="container tarifes__container">
+        <div class="tarifes__header">
+          <h2 class="tarifes__title">
+            <span class="tarifes__title-line">Tarifes Aula Gastronòmica</span>
+          </h2>
+          <p class="tarifes__subtitle">
+            Espai professional amb capacitat fins a 28 persones, cuina industrial equipada, pantalles i zona polivalent.
           </p>
+          <a href="contacte.html" class="tarifes__btn btn--cta btn--cta--solid">
+            <span class="btn--cta__text">VOLS DONAR VIDA AL TEU PROJECTE GASTRONÒMIC?</span>
+            <span class="btn--cta__fill"></span>
+          </a>
+        </div>
+
+        <div class="tarifes__grid">
+          <!-- Taula Tarifes -->
+          <div class="tarifes__table-card">
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Presentació de producte</span>
+              <span class="tarifes__row-value"><em>Fins a 2 h / 300 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Presentació de llibre</span>
+              <span class="tarifes__row-value"><em>Fins a 2 h / 250 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Tast professional</span>
+              <span class="tarifes__row-value"><em>Fins a 3 h / 350 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Reunions d'empresa</span>
+              <span class="tarifes__row-value"><em>Mitja jornada / 400 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Formacions</span>
+              <span class="tarifes__row-value"><em>Jornada / 400 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Showcooking</span>
+              <span class="tarifes__row-value"><em>Fins a 3 h / 650 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Presentació de marca</span>
+              <span class="tarifes__row-value"><em>Mitja jornada / 600 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Rodatges i sessions fotogràfiques</span>
+              <span class="tarifes__row-value"><em>Jornada / 750 €</em> (+IVA)</span>
+            </div>
+            <div class="tarifes__row">
+              <span class="tarifes__row-label">Esdeveniment privat</span>
+              <span class="tarifes__row-value"><em>Jornada / 900 €</em> (+IVA)</span>
+            </div>
+          </div>
+
+          <!-- Packs Recomanats -->
+          <div class="tarifes__packs-card">
+            <h3 class="tarifes__packs-title">PACKS RECOMANATS</h3>
+            <ul class="tarifes__packs-list">
+              <li>
+                <span class="tarifes__pack-bullet"></span>
+                <span class="tarifes__pack-content"
+                  ><strong>Presentació de llibre:</strong> espai, pantalla, muntatge i copa de benvinguda.
+                  <span class="tarifes__highlight">Des de 250 €.</span></span
+                >
+              </li>
+              <li>
+                <span class="tarifes__pack-bullet"></span>
+                <span class="tarifes__pack-content"
+                  ><strong>Showcooking Premium:</strong> espai, cuina, equip tècnic, suport i neteja.
+                  <span class="tarifes__highlight">Des de 650 €.</span></span
+                >
+              </li>
+              <li>
+                <span class="tarifes__pack-bullet"></span>
+                <span class="tarifes__pack-content"
+                  ><strong>Producte Launch:</strong> espai exclusiu, cuina, pantalles, zona networking i suport tècnic.
+                  <span class="tarifes__highlight">Des de 800 €.</span></span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Bottom Layout: Inclou & Extres -->
+        <div class="tarifes__bottom">
+          <div class="tarifes__inclou">
+            <h4 class="tarifes__bottom-title">Inclou:</h4>
+            <ul class="tarifes__inclou-list">
+              <li>Vaixella gastronòmica</li>
+              <li>Neteja final</li>
+              <li>Projector i pantalla</li>
+              <li>Equip de so</li>
+            </ul>
+          </div>
+          <div class="tarifes__extres">
+            <h4 class="tarifes__bottom-title">EXTRES:</h4>
+            <div class="tarifes__extres-table">
+              <div class="tarifes__extres-row">
+                <span class="tarifes__extres-label">Xef Quim Casellas</span>
+                <span class="tarifes__extres-value">Per hora / 250 € <small>(+IVA)</small></span>
+              </div>
+              <div class="tarifes__extres-row">
+                <span class="tarifes__extres-label">Ajudant de cuina</span>
+                <span class="tarifes__extres-value">Per hora / 35 € <small>(+IVA)</small></span>
+              </div>
+              <div class="tarifes__extres-row">
+                <span class="tarifes__extres-label">Material gastronòmic especial</span>
+                <span class="tarifes__extres-value">Segons pressupost <small>(+IVA)</small></span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Secció Un espai polivalent -->
-    <section class="lab-corbi-poly">
-      <div class="container lab-corbi-poly__container">
-        <div class="lab-corbi-poly__grid">
-          <!-- Columna Esquerra -->
-          <div class="lab-corbi-poly__col lab-corbi-poly__col--left">
-            <h2 class="lab-corbi-poly__title">
-              <span class="lab-corbi-poly__title-line">Un espai polivalent</span>
-            </h2>
-            <div class="lab-corbi-poly__img-wrapper lab-corbi-poly__img-wrapper--left">
-              <img src="img/AulaGastronomica_juny2026_25.webp" alt="Detall Espai Lab" class="lab-corbi-poly__img" />
-            </div>
-            <div class="lab-corbi-poly__btn-wrapper">
-              <a href="contacte.html" class="btn--cta btn--cta--solid">
-                <span class="btn--cta__text">VOLS FORMAR PART DE L'EXPERIÈNCIA?</span>
-                <span class="btn--cta__fill"></span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Columna Dreta -->
-          <div class="lab-corbi-poly__col lab-corbi-poly__col--right">
-            <div class="lab-corbi-poly__img-wrapper lab-corbi-poly__img-wrapper--right">
-              <img src="img/AulaGastronomica_juny2026_01.webp" alt="Taula Lab Corbí" class="lab-corbi-poly__img" />
-            </div>
-            <div class="lab-corbi-poly__content">
-              <p class="lab-corbi-poly__text">
-                El Lab Corbí s'adapta a les necessitats de cada projecte i es converteix en l'escenari ideal per a:
-              </p>
-              <ul class="lab-corbi-poly__list">
-                <li><a href="activitats.html">Showcookings i demostracions culinàries</a></li>
-                <li><a href="activitats.html">Tastos i maridatges</a></li>
-                <li><a href="activitats.html">Presentacions de productes i llibres</a></li>
-                <li><a href="activitats.html">Pop-ups gastronòmics</a></li>
-                <li><a href="activitats.html">Dinars i esdeveniments privats</a></li>
-                <li><a href="activitats.html">Jornades de formació</a></li>
-                <li><a href="activitats.html">Reunions i trobades d'empresa</a></li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Secció Crear Contingut -->
-    <section class="lab-corbi-creacio">
-      <div class="container lab-corbi-creacio__container">
-        <h2 class="lab-corbi-creacio__title">
-          <span class="lab-corbi-creacio__title-line">Un escenari perfecte per crear contingut</span>
-        </h2>
-        <div class="lab-corbi-creacio__grid">
-          <!-- Columna Esquerra: Contingut de text -->
-          <div class="lab-corbi-creacio__col lab-corbi-creacio__col--left">
-            <div class="lab-corbi-creacio__content">
-              <p class="lab-corbi-creacio__text">
-                La llum natural, el disseny de l'espai i una cuina completament equipada fan del Lab Corbí un entorn perfecte per produir contingut audiovisual.
-              </p>
-              <p class="lab-corbi-creacio__subtext">Ideal per a:</p>
-              <ul class="lab-corbi-creacio__list">
-                <li>Gravació de receptes</li>
-                <li>Entrevistes</li>
-                <li>Podcasts</li>
-                <li>Fotografia gastronòmica</li>
-                <li>Vídeos per a Instagram, TikTok i xarxes socials</li>
-                <li>Campanyes de marca</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Columna Dreta: Imatge -->
-          <div class="lab-corbi-creacio__col lab-corbi-creacio__col--right">
-            <div class="lab-corbi-creacio__img-wrapper">
-              <img src="img/AulaGastronomica_juny2026_15.webp" alt="Creació de contingut al Lab Corbí" class="lab-corbi-creacio__img" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Secció Tarifes -->
+    <!-- Secció Tarifes: LAB CORBÍ -->
     <section class="lab-corbi-tarifes">
       <div class="container lab-corbi-tarifes__container">
+        <h2 class="lab-corbi-tarifes__heading">Tarifes LAB CORBÍ</h2>
         <div class="lab-corbi-tarifes__grid">
           <!-- Columna Esquerra: Intro i CTA -->
           <div class="lab-corbi-tarifes__col lab-corbi-tarifes__col--left">
             <div class="lab-corbi-tarifes__intro">
-              <p class="lab-corbi-tarifes__text-highlight">Creiem que les millors receptes no només s'escriuen als llibres. També neixen en les persones que comparteixen una taula, una conversa i les ganes d'aprendre.</p>
+              <p class="lab-corbi-tarifes__text-highlight">
+                Creiem que les millors receptes no només s'escriuen als llibres. També neixen en les persones que comparteixen una taula, una conversa
+                i les ganes d'aprendre.
+              </p>
             </div>
-            
+
             <div class="lab-corbi-tarifes__btn-wrapper">
               <a href="contacte.html" class="btn--cta btn--cta--solid">
                 <span class="btn--cta__text">VOLS DONAR VIDA AL TEU PROJECTE GASTRONÒMIC?</span>
@@ -468,7 +454,10 @@
                 <a href="cookies.html" class="cta__legal-link">Política de cookies</a>
               </div>
               <span class="cta__legal-text">© 2026 Aula Gastronòmica Quim Casellas</span>
-              <span class="cta__legal-text">Creat per <a href="https://vorastudio.cat" target="_blank" rel="noopener noreferrer"><img src="img/logo/logoVora.png" alt="VoraStudio" /></a></span>
+              <span class="cta__legal-text"
+                >Creat per
+                <a href="https://vorastudio.cat" target="_blank" rel="noopener noreferrer"><img src="img/logo/logoVora.png" alt="VoraStudio" /></a
+              ></span>
             </div>
           </div>
         </div>
@@ -476,6 +465,6 @@
     </footer>
 
     <script src="js/lang.js"></script>
-    <script src="js/cuina.js"></script>
+    <script src="js/tarifes.js"></script>
   </body>
 </html>
