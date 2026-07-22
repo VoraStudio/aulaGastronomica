@@ -635,9 +635,6 @@ function initTarifesAnimations() {
   const packsCard = document.querySelector(".tarifes__packs-card");
   const bottom = document.querySelector(".tarifes__bottom");
   const footerTitleLine = document.querySelector(".tarifes__footer-title-line");
-  const footerText = document.querySelector(".tarifes__footer-text");
-  const footerBrand = document.querySelector(".tarifes__footer-brand");
-  const footerBtns = document.querySelectorAll(".tarifes__footer-pill-btn");
 
   if (!section || !titleLine) return;
 
@@ -647,9 +644,6 @@ function initTarifesAnimations() {
   gsap.set(tableCard, { opacity: 0, x: -30 });
   gsap.set(packsCard, { opacity: 0, x: 30 });
   gsap.set(bottom, { opacity: 0, y: 20 });
-  gsap.set(footerText, { opacity: 0, y: 20 });
-  gsap.set(footerBrand, { opacity: 0, y: 15 });
-  gsap.set(footerBtns, { opacity: 0, scale: 0.9, y: 10 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -693,18 +687,23 @@ function initTarifesAnimations() {
       stagger: { each: 0.012 },
     }, "-=0.2");
   }
-
-  tl.to(footerText, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4")
-    .to(footerBrand, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, "-=0.3")
-    .to(footerBtns, { opacity: 1, scale: 1, y: 0, stagger: 0.1, duration: 0.5, ease: "back.out(1.7)" }, "-=0.4");
 }
 
-/* ----- INICI ----- */
 
+
+
+/* ----- INICI ----- */
 document.addEventListener("DOMContentLoaded", () => {
+  gsap.set("main", { opacity: 1 });
+
+  document.querySelectorAll(".header__link, .mobile-link").forEach(el => {
+    el.style.setProperty("visibility", "visible", "important");
+  });
+
+  initMobileMenu();
+
   document.fonts.ready.then(() => {
     initHeaderAnimations();
-    initMobileMenu();
     initSpaceFeatures();
     initCTA();
     initCtaRipple();

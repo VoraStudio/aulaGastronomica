@@ -1,20 +1,23 @@
 /* ----- INICIALITZACIÓ GLOBAL ----- */
 document.addEventListener("DOMContentLoaded", () => {
+  gsap.set("main", { opacity: 1 });
+
+  document.querySelectorAll(".header__link, .mobile-link").forEach(el => {
+    el.style.setProperty("visibility", "visible", "important");
+  });
+
+  initMobileMenu();
+
   document.fonts.ready.then(() => {
     // Setejem fons de color per defecte com a les altres pàgines
     gsap.set(document.body, { backgroundColor: "#aed4ff" });
-
-    // Esperem a que el layout s'assenti abans d'iniciar les animacions
-    setTimeout(() => {
-      initHeaderAnimations();
-      initMobileMenu();
-      initHeroAnimations();
-      initContactAnimations();
-      initSecurity();
-      setupFormHandler();
-      initCTA();
-      initCtaRipple();
-    }, 100);
+    initHeaderAnimations();
+    initHeroAnimations();
+    initContactAnimations();
+    initSecurity();
+    setupFormHandler();
+    initCTA();
+    initCtaRipple();
   });
 });
 
@@ -186,35 +189,42 @@ function initMobileMenu() {
 
 /* ----- HERO ENTRANCE ANIMATIONS ----- */
 function initHeroAnimations() {
-  const titleLine = document.querySelector(".contacte-hero__title-line");
+  const titleLines = document.querySelectorAll(".contacte-hero__title-line");
   const subtext = document.querySelector(".contacte-hero__subtext");
+  if (!titleLines.length) return;
 
-  if (!titleLine) return;
+  gsap.set([...titleLines, subtext].filter(Boolean), { opacity: 1, visibility: "visible" });
 
-  const tl = gsap.timeline();
+  const tl = gsap.timeline({ delay: 0.5 });
 
-  const splitTitle = new SplitText(titleLine, { type: "words,chars" });
-  tl.from(splitTitle.chars, {
-    duration: 0.8,
-    opacity: 0,
-    rotationX: 90,
-    rotationY: (i) => (i % 2 === 0 ? -12 : 12),
-    transformOrigin: "center center",
-    transformStyle: "preserve-3d",
-    ease: "power3.out",
-    stagger: { each: 0.035 }
+  titleLines.forEach((line) => {
+    const split = new SplitText(line, { type: "chars" });
+    tl.from(split.chars, {
+      duration: 1.2,
+      opacity: 0,
+      rotationX: 90,
+      rotationY: (i) => (i % 2 === 0 ? -15 : 15),
+      transformOrigin: "center center",
+      transformStyle: "preserve-3d",
+      ease: "power2.out",
+      stagger: { each: 0.09, from: "start" },
+    }, "<");
   });
 
   if (subtext) {
-    const splitSubtext = new SplitText(subtext, { type: "lines" });
-    gsap.set(splitSubtext.lines, { opacity: 0, y: 15 });
-    tl.to(splitSubtext.lines, {
+    const subSplit = new SplitText(subtext, { type: "lines" });
+    gsap.set(subSplit.lines, {
+      opacity: 0,
+      rotationX: 90,
+      transformOrigin: "bottom center",
+    });
+    tl.to(subSplit.lines, {
+      duration: 2.5,
       opacity: 1,
-      y: 0,
-      stagger: 0.15,
-      duration: 0.8,
-      ease: "power3.out"
-    }, "-=0.3");
+      rotationX: 0,
+      ease: "power3.out",
+      stagger: { each: 0.15, from: "start" },
+    }, "<0.8");
   }
 }
 

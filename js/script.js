@@ -152,6 +152,8 @@ function initHeroTitle3D() {
   const subtitle = document.querySelector(".hero__subtitle");
   if (!titleLines.length || !subtitle) return;
 
+  gsap.set([titleLines, subtitle], { opacity: 1, visibility: "visible" });
+
   const tl = gsap.timeline({ delay: 0.5 });
 
   // [04] Abanico 3D: Rotación Dual (Ejes X/Y) — modo Inferior
@@ -174,6 +176,17 @@ function initHeroTitle3D() {
       "<",
     );
   });
+
+  // Logo fade-in: aparece cuando el título está terminando
+  tl.from(
+    ".hero__icon-logo",
+    {
+      opacity: 0,
+      duration: 8,
+      ease: "power3.out",
+    },
+    ">-=1.5",
+  );
 
   // [03] Despliegue Cinemático 3D (Ejes X/Y) — modo Inferior
   // rotationX: 90 con transformOrigin "bottom center"
@@ -278,7 +291,8 @@ function initVideoExpand() {
       const localLeft = rect.left - heroRect.left;
 
       const scaleX = window.innerWidth / width;
-      const scaleY = window.innerHeight / height;
+      const viewportH = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      const scaleY = (viewportH + 120) / height;
       const scale = Math.max(scaleX, scaleY);
 
       const x = -localLeft + (window.innerWidth - width) / 2;
@@ -297,6 +311,7 @@ function initVideoExpand() {
       start: 0,
       end: pinScrollEnd,
       pin: true,
+      pinType: "fixed",
       pinSpacing: true,
       anticipatePin: 1,
       invalidateOnRefresh: true,
@@ -368,7 +383,7 @@ function initVideoExpand() {
       scrollTrigger: {
         trigger: ".hero",
         start: "top top",
-        end: "+=100vh",
+        end: "+=140vh",
         scrub: 3,
         invalidateOnRefresh: true,
         onLeaveBack: () => {
@@ -396,6 +411,7 @@ function initVideoExpand() {
       start: "top top",
       end: `+=${pinScrollEnd}`,
       pin: true,
+      pinType: "fixed",
       anticipatePin: 1,
       invalidateOnRefresh: true,
     });
@@ -602,6 +618,8 @@ function iniciChefName() {
   const slogan = document.querySelector(".chef-profile__slogan");
   if (!nom) return;
 
+  gsap.set(nom, { opacity: 1, visibility: "visible" });
+
   const split = new SplitText(nom, { type: "chars, lines" });
   const quoteSplit = new SplitText(quote, { type: "words, lines" });
   gsap.set(quoteSplit.lines, { opacity: 0, y: 30, rotateX: -60, yPercent: 0, transformOrigin: "center top" });
@@ -612,20 +630,22 @@ function iniciChefName() {
     gsap.set(sloganSplit.lines, { opacity: 0, y: 30, rotateX: -60, yPercent: 0, transformOrigin: "center top" });
   }
 
+  const isMobile = window.matchMedia("(max-width: 47.999rem)").matches;
+
   let tl = gsap.timeline({
     scrollTrigger: {
       trigger: ".chef-profile__name",
-      start: "top 85%",
-      toggleActions: "play none none reverse",
+      start: isMobile ? "top 95%" : "center 85%",
+      toggleActions: "play none none none",
     },
   });
   tl.from(split.chars, {
-    duration: 0.7,
+    duration: isMobile ? 0.4 : 0.7,
     opacity: 0,
     yPercent: 100,
     clipPath: "inset(0 0 100% 0)",
     ease: "power2.out",
-    stagger: { each: 0.1, from: "start" },
+    stagger: { each: isMobile ? 0.04 : 0.1, from: "start" },
   });
   tl.to(
     quoteSplit.lines,
@@ -663,6 +683,8 @@ function initChefMenu() {
   const links = document.querySelectorAll(".chef-menu__link");
   const imageWrapper = document.querySelector(".chef-menu__image-wrapper");
   if (!section || !title || !links.length || !imageWrapper) return;
+
+  gsap.set(title, { opacity: 1, visibility: "visible" });
 
   // Split title into chars (mismo efecto que QUIM CASELLAS)
   const titleSplit = new SplitText(title, { type: "chars, lines" });
@@ -737,28 +759,36 @@ function initChefMenu() {
     );
   });
 
-  // Image swap on hover
+  // Image swap on hover con GSAP
   const chefImg = document.querySelector(".chef-menu__img");
+  const defaultImg = "img/pexels-kampus-8629123.webp";
   if (!chefImg) return;
+  let swapTween = null;
 
   links.forEach((link) => {
     const imgSrc = link.dataset.image;
     if (!imgSrc) return;
 
     link.addEventListener("mouseenter", () => {
-      chefImg.style.opacity = "0";
-      setTimeout(() => {
-        chefImg.src = imgSrc;
-        chefImg.style.opacity = "1";
-      }, 180);
+      swapTween?.kill();
+      swapTween = gsap
+        .timeline()
+        .to(chefImg, { opacity: 0, duration: 0.25, ease: "power2.out" })
+        .call(() => {
+          chefImg.src = imgSrc;
+        })
+        .to(chefImg, { opacity: 1, duration: 0.35, ease: "power2.inOut" });
     });
 
     link.addEventListener("mouseleave", () => {
-      chefImg.style.opacity = "0";
-      setTimeout(() => {
-        chefImg.src = "img/pexels-kampus-8629123.webp";
-        chefImg.style.opacity = "1";
-      }, 180);
+      swapTween?.kill();
+      swapTween = gsap
+        .timeline()
+        .to(chefImg, { opacity: 0, duration: 0.8, ease: "power2.out" })
+        .call(() => {
+          chefImg.src = defaultImg;
+        })
+        .to(chefImg, { opacity: 1, duration: 1.5, ease: "power2.inOut" });
     });
   });
 }
@@ -1006,6 +1036,8 @@ function initActivities() {
   const texts = document.querySelectorAll(".activities__text");
   if (!section || !titleLines.length || !imageWrapper) return;
 
+  gsap.set(titleLines, { opacity: 1, visibility: "visible" });
+
   // Estados iniciales
   gsap.set(texts, { opacity: 0, y: 20 });
 
@@ -1058,6 +1090,7 @@ function initCTA() {
   const buttons = document.querySelectorAll(".btn--cta");
   const footerLogo = document.querySelector(".cta__footer-logo");
   const footerBtns = document.querySelectorAll(".cta__footer-btn");
+  const legalBlock = document.querySelector(".cta__footer-legal-block");
   if (!section || !titleLine || !text) return;
 
   // Estados iniciales
@@ -1065,6 +1098,7 @@ function initCTA() {
   gsap.set(buttons, { opacity: 0, scale: 0.9 });
   gsap.set(footerLogo, { opacity: 0, y: 20 });
   gsap.set(footerBtns, { opacity: 0, y: 20 });
+  if (legalBlock) gsap.set(legalBlock, { opacity: 0 });
 
   const tl = gsap.timeline({
     scrollTrigger: {
@@ -1093,7 +1127,9 @@ function initCTA() {
     .to(buttons, { opacity: 1, scale: 1, stagger: 0.15, duration: 0.6, ease: "back.out(1.7)" }, "-=0.4")
     // 4. Footer reveal
     .to(footerLogo, { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.2")
-    .to(footerBtns, { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }, "<0.1");
+    .to(footerBtns, { opacity: 1, y: 0, stagger: 0.1, duration: 0.6, ease: "power3.out" }, "<0.1")
+    // 5. Legal block con fade largo al final
+    .to(legalBlock, { opacity: 1, duration: 1.5, ease: "power2.out" }, ">0.3");
 }
 
 /* ----- RIPPLE BTN ----- */
@@ -1241,14 +1277,22 @@ function initIntroDetails() {
 /* ----- INICI ----- */
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Esperamos a que las fuentes de Google carguen para evitar "SplitText called before fonts loaded"
+  gsap.set("main", { opacity: 1 });
+
+  document.querySelectorAll(".header__link, .mobile-link").forEach((el) => {
+    el.style.setProperty("visibility", "visible", "important");
+  });
+
+  initMobileMenu();
+  initCTA();
+  initCtaRipple();
+
   document.fonts.ready.then(() => {
     initHeroGridReveal();
     initHeroTitle3D();
     initVideoExpand();
     initIntroScrubSetup();
     initHeroMiddleEffects();
-    initMobileMenu();
     initHeaderAnimations();
     iniciChefName();
     initChefMenu();
@@ -1256,7 +1300,5 @@ document.addEventListener("DOMContentLoaded", () => {
     initSpaceFeatures();
     initCorporate();
     initActivities();
-    initCTA();
-    initCtaRipple();
   });
 });
