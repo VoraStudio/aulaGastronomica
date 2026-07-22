@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+  gsap.set("main", { opacity: 1 });
   // Inyectem Header
   const headerPlaceholder = document.getElementById("header-placeholder");
   if (headerPlaceholder) {

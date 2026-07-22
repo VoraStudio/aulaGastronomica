@@ -44,20 +44,23 @@ const MOCK_ACTIVITIES = [
 
 /* ----- INICIALITZACIÓ GLOBAL ----- */
 document.addEventListener("DOMContentLoaded", () => {
+  gsap.set("main", { opacity: 1 });
+
+  document.querySelectorAll(".header__link, .mobile-link").forEach(el => {
+    el.style.setProperty("visibility", "visible", "important");
+  });
+
+  initMobileMenu();
+
   document.fonts.ready.then(() => {
     // Setejem fons de color per defecte com a les altres pàgines
     gsap.set(document.body, { backgroundColor: "#aed4ff" });
-
-    // Esperem a que el layout s'assenti abans d'iniciar les animacions
-    setTimeout(() => {
-      initHeaderAnimations();
-      initMobileMenu();
-      initHeroAnimations();
-      loadActivities();
-      setupModalEvents();
-      initCTA();
-      initCtaRipple();
-    }, 100);
+    initHeaderAnimations();
+    initHeroAnimations();
+    loadActivities();
+    setupModalEvents();
+    initCTA();
+    initCtaRipple();
   });
 });
 
@@ -379,14 +382,14 @@ function openActivityModal(item) {
             <span>${placesStr}</span>
           </li>
           <li>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="12" y1="1" x2="12" y2="23"></line>
-              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-            </svg>
+
             <span class="price-val">${preuStr}</span>
           </li>
         </ul>
-        <a href="index.html#contacte" class="btn--cta btn--cta--solid btn--cta--modal">RESERVAR PLAÇA</a>
+        <a href="index.html#contacte" class="btn--cta btn--cta--solid btn--cta--modal">
+          <span class="btn--cta__text">RESERVAR PLAÇA</span>
+          <span class="btn--cta__fill"></span>
+        </a>
       </div>
     </div>
   `;
@@ -411,6 +414,24 @@ function openActivityModal(item) {
     ctaBtn.addEventListener("click", () => {
       closeActivityModal();
     });
+
+    // Ripple effect como el resto de botones
+    const fill = ctaBtn.querySelector(".btn--cta__fill");
+    if (fill) {
+      ctaBtn.addEventListener("mouseenter", (e) => {
+        const rect = ctaBtn.getBoundingClientRect();
+        const relX = e.clientX - rect.left;
+        const relY = e.clientY - rect.top;
+        gsap.fromTo(fill, { x: relX, y: relY, scale: 0 }, { scale: 50, duration: 4, ease: "power5.in", overwrite: "auto" });
+      });
+
+      ctaBtn.addEventListener("mouseleave", (e) => {
+        const rect = ctaBtn.getBoundingClientRect();
+        const relX = e.clientX - rect.left;
+        const relY = e.clientY - rect.top;
+        gsap.to(fill, { x: relX, y: relY, scale: 0, duration: 0.6, ease: "power2.out", overwrite: "auto" });
+      });
+    }
   }
 }
 
